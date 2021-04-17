@@ -12,22 +12,17 @@
 				
 				<!-- Logo -->
 				<div id="logo">
-					<a href="index.html"><img src="{% static 'images/logo.png'%}" alt=""></a>
+					<a href="/"><img src="{% static 'images/logo.png'%}" alt=""></a>
+					
 				</div>
 
 				<!-- Main Navigation -->
 				<nav id="navigation">
 					<ul id="responsive">
 
-						<li><a href="#">Home</a>
-							<ul class="dropdown-nav">
-								<li><a href="index.html">Home 1</a></li>
-								<li><a href="index-2.html">Home 2</a></li>
-								<li><a href="index-3.html">Home 3</a></li>
-							</ul>
-						</li>
-
-						<li><a href="#" class="current">Find Work</a>
+						<li><a href="/">Home</a></li>
+						<li><a href="/jobs">Browse a Job</a></li>
+						{% comment %} <li><a href="#" class="current">Find Work</a>
 							<ul class="dropdown-nav">
 								<li><a href="#">Browse Jobs</a>
 									<ul class="dropdown-nav">
@@ -52,7 +47,7 @@
 								<li><a href="single-task-page.html">Task Page</a></li>
 								<li><a href="single-company-profile.html">Company Profile</a></li>
 							</ul>
-						</li>
+						</li> 
 
 						<li><a href="#">For Employers</a>
 							<ul class="dropdown-nav">
@@ -107,7 +102,7 @@
 								<li><a href="pages-404.html">404 Page</a></li>
 								<li><a href="pages-contact.html">Contact</a></li>
 							</ul>
-						</li>
+						</li> {% endcomment %}
 
 					</ul>
 				</nav>
@@ -257,7 +252,7 @@
 				</div>
 				<!--  User Notifications / End -->
 
-				<!-- User Menu -->
+				{% comment %} <!-- User Menu -->
 				<div class="header-widget">
 
 					<!-- Messages -->
@@ -299,7 +294,7 @@
 					</div>
 
 				</div>
-				<!-- User Menu / End -->
+				<!-- User Menu / End --> {% endcomment %}
 
 				<!-- Mobile Navigation Button -->
 				<span class="mmenu-trigger">

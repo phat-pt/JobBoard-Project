@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'pages.apps.PagesConfig',
+    'ckeditor'
 ]
 
 MIDDLEWARE = [
@@ -79,7 +80,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'jobsearch_db',
         'USER': 'postgres',
-        'PASSWORD': '025908560@Bc',
+        'PASSWORD': '123456',
         'HOST': 'localhost',
         'PORT': 5432,
     }
