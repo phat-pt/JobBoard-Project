@@ -1,10 +1,13 @@
 from django.shortcuts import render, get_object_or_404
 from .models import JobPost
 from django.core.paginator import EmptyPage, Paginator, PageNotAnInteger
+from django_elasticsearch_dsl import Document
+from django_elasticsearch_dsl.registries import registry
+from .documents import JobPostDocument
 
 # Create your views here.
 def home(request):
-    jobs = JobPost.objects.all()
+    jobs = JobPost.objects.all()[:5]
     data = {
         'jobs' : jobs,
     }
@@ -15,14 +18,11 @@ def contact(request):
 
 def jobs(request):
     jobs = JobPost.objects.all()
-    
-    if 'keyword' in request.GET:
-        keyword = request.GET['keyword']
-    if 'location' in request.GET:
-        location = request.GET['location']
-        if keyword:
-            jobs = jobs.filter(job_description__icontains = keyword).filter(job_location__icontains = location)
-
+    # keyword = request.GET.get('keyword')
+    # if keyword:
+    #     jobs = JobPostDocument.search().query('match',job_title=keyword)
+    # else:
+    #     jobs = ''
     paginator = Paginator(jobs, 50) 
     page = request.GET.get('page')
     paged_jobs = paginator.get_page(page)
@@ -39,13 +39,11 @@ def job_detail(request, id):
     return render(request, 'pages/job_detail.html', data)
 
 def search(request):
-    jobs = JobPost.objects.all()
-    if 'keyword' in request.GET:
-        keyword = request.GET['keyword']
-    if 'location' in request.GET:
-        location = request.GET['location']
-        if location or location:
-            jobs = jobs.filter(job_location__icontains = location)
+    keyword = request.GET.get('keyword')
+    if keyword:
+        jobs = JobPostDocument.search().query('match',job_title=keyword)
+    else:
+        jobs = ''
     data = {
         'jobs' : jobs, 
     }
