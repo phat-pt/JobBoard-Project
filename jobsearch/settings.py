@@ -38,8 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'pages.apps.PagesConfig',
-    'ckeditor',
-    'tinymce',
+    'django_summernote',
     'django_elasticsearch_dsl'
 ]
 
@@ -139,4 +138,8 @@ STATICFILES_DIRS = [
     BASE_DIR / "jobsearch/static",
 ]
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT =  BASE_DIR / 'media'
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+SUMMERNOTE_THEME = 'bs4'    # Use Bootstrap4 theme
 

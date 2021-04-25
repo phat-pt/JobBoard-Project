@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from ckeditor.fields import RichTextField
+from django_elasticsearch_dsl import TextField
 # Create your models here.
 
 class Applicant_Profile(models.Model):
@@ -36,7 +36,7 @@ class Recruiter(models.Model):
 
 class JobPost(models.Model):
     ID = models.AutoField(primary_key=True, editable = False)
-    Recruiter=  models.ForeignKey(Recruiter, on_delete=models.SET_NULL,null= True, blank= True)
+    Recruiter =  models.ForeignKey(Recruiter, on_delete=models.SET_NULL,null= True, blank= True)
     job_title = models.TextField(null=True, blank = True)
     company_name =models.CharField(max_length=255, null=True, blank = True)
     job_location = models.CharField(max_length=255, null=True, blank = True)
@@ -48,7 +48,6 @@ class JobPost(models.Model):
     job_type = models.CharField(max_length=255, null=True, blank = True)
     company_url = models.TextField(null=True, blank = True)
     is_active = models.BooleanField(True)
-    
     
     def __str__(self):
         return self.job_title

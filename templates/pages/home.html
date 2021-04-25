@@ -4,7 +4,9 @@
 <!-- Intro Banner
 ================================================== -->
 
-<div class="intro-banner dark-overlay big-padding">
+<!-- Intro Banner
+================================================== -->
+<div class="intro-banner big-padding">
 	
 	<!-- Transparent Header Spacer -->
 	<div class="transparent-header-spacer"></div>
@@ -21,10 +23,10 @@
 			</div>
 		</div>
 		
-		<!-- Search Bar -->
+<!-- Search Bar -->
 		<div class="row">
 			<div class="col-md-12">
-					<form action = "{% url 'search' %}" class="intro-banner-search-form margin-top-95">
+					<form action = "{% url 'search' %}" class="intro-banner-search-form margin-top-95" >
 						<!-- Search Field -->
 						<div class="intro-search-field with-autocomplete">
 							<label for="autocomplete-input" class="field-title ripple-effect">Where?</label>
@@ -71,8 +73,8 @@
 	</div>
 	
 	<!-- Video Container -->
-	<div class="video-container" data-background-image="images/home-video-background-poster.jpg">
-		<video loop autoplay muted>
+	<div class="video-container" style="background-image: url('{% static "images/home-background.jpg"%}');">
+		<video loop="" autoplay="" muted="">
 			<source src="images/home-video-background.mp4" type="video/mp4">
 		</video>
 	</div>
@@ -104,7 +106,7 @@
 
 							<!-- Logo -->
 							<div class="job-listing-company-logo">
-								<img src="% static 'images/company-logo-01.png'%" alt="">
+								<img src="{% static 'images/company-logo-01.png'%}" alt="">
 							</div>
 
 							<!-- Details -->
@@ -138,7 +140,7 @@
 
 
 <!-- Photo Section -->
-<div class="photo-section" data-background-image="images/section-background.jpg">
+<div class="photo-section" style="background-image: url('{% static "images/section-background.jpg"%}');">
 
 	<!-- Infobox -->
 	<div class="text-content white-font">
