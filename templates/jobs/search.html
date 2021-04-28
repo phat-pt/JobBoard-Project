@@ -18,7 +18,7 @@
 					<h3>Location</h3>
 					<div class="keywords-container">
 						<div class="keyword-input-container">
-							<input type="text" class="keyword-input" placeholder="e.g. location" name = "location"/>
+							<input type="text" class="keyword-input" placeholder="e.g. location" name="location" value="{{ request.GET.location }}"/>
 						</div>
 						<div class="keywords-list"><!-- keywords go here --></div>
 						<div class="clearfix"></div>
@@ -31,7 +31,7 @@
 					<h3>Keywords</h3>
 					<div class="keywords-container">
 						<div class="keyword-input-container">
-							<input type="text" class="keyword-input" placeholder="e.g. job title" name = "keyword"/>
+							<input type="text" class="keyword-input" placeholder="e.g. job title" name="keyword" value="{{ request.GET.keyword }}"/>
 						</div>
 						<div class="keywords-list"><!-- keywords go here --></div>
 						<div class="clearfix"></div>
@@ -162,7 +162,7 @@
 							<nav class="pagination">
 								<ul>
 							{% if jobs.has_previous %}
-									<li class="pagination-arrow"><a href="?page={{jobs.previous_page_number}}"><i class="icon-material-outline-keyboard-arrow-left"></i></a></li>
+									<li class="pagination-arrow"><a href="?page={{jobs.previous_page_number}}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}"><i class="icon-material-outline-keyboard-arrow-left"></i></a></li>
 							{% else %}
 									<li class="pagination-arrow" disabled ><a href="#"><i class="icon-material-outline-keyboard-arrow-left"></i></a></li>
 							{% endif %}
@@ -171,19 +171,19 @@
 								{% if jobs.number == i%}
 									<li><a href="#"  class="current-page">{{i}}</a></li>
 								{%else%}
-									<li><a href="?page={{i}}">{{i}}</a></li>
+									<li><a href="?page={{i}}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}">{{i}}</a></li>
 								{%endif %}
 							{%endfor%}
 
 							{% if jobs.has_next %}
-									<li class="pagination-arrow"><a href="?page={{jobs.next_page_number}}"><i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
+									<li class="pagination-arrow"><a href="?page={{ jobs.next_page_number }}{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}"><i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
 							{% else %}
 									<li class="pagination-arrow" disabled ><a href="#"><i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
 							{% endif %}
 
 								</ul>
 							</nav>
-						{% endif %}
+						{% endif %} 
 						</div>
 					</div>
 				</div>

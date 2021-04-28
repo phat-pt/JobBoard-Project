@@ -139,7 +139,10 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_URL = '/media/'
+
 MEDIA_ROOT =  BASE_DIR / 'media'
+
 X_FRAME_OPTIONS = 'SAMEORIGIN'
+
 SUMMERNOTE_THEME = 'bs4'    # Use Bootstrap4 theme
 

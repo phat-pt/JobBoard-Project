@@ -28,10 +28,10 @@
 			<div class="col-md-12">
 					<form action = "{% url 'search' %}" class="intro-banner-search-form margin-top-95" >
 						<!-- Search Field -->
-						<div class="intro-search-field with-autocomplete">
-							<label for="autocomplete-input" class="field-title ripple-effect">Where?</label>
+						<div class="intro-search-field ">
+							<label for="intro-location" class="field-title ripple-effect">Where?</label>
 							<div class="input-with-icon">
-								<input id="autocomplete-input" type="text" placeholder="Online Job">
+								<input id="intro-location" type="text" placeholder="Remote" name="location" value="{{ request.GET.location }}"">
 								<i class="icon-material-outline-location-on"></i>
 							</div>
 						</div>
@@ -39,7 +39,7 @@
 						<!-- Search Field -->
 						<div class="intro-search-field">
 							<label for ="intro-keywords" class="field-title ripple-effect">What job you want?</label>
-							<input id="intro-keywords" type="text" placeholder="Job Title or Keywords" name = "keyword">
+							<input id="intro-keywords" type="text" placeholder="Job Title or Keywords" name = "keyword" value="{{ request.GET.keyword }}"">
 						</div>
 
 						<!-- Button -->
@@ -50,30 +50,10 @@
 			</div>
 		</div>
 
-		<!-- Stats -->
-		<div class="row">
-			<div class="col-md-12">
-				<ul class="intro-stats margin-top-45 hide-under-992px">
-					<li>
-						<strong class="counter">1,586</strong>
-						<span>Jobs Posted</span>
-					</li>
-					<li>
-						<strong class="counter">3,543</strong>
-						<span>Tasks Posted</span>
-					</li>
-					<li>
-						<strong class="counter">1,232</strong>
-						<span>Freelancers</span>
-					</li>
-				</ul>
-			</div>
-		</div>
-
 	</div>
 	
 	<!-- Video Container -->
-	<div class="video-container" style="background-image: url('{% static "images/home-background.jpg"%}');">
+	<div class="video-container" style="background-image: url('{% static "images/JobSlide.jpg"%}');">
 		<video loop="" autoplay="" muted="">
 			<source src="images/home-video-background.mp4" type="video/mp4">
 		</video>
@@ -104,10 +84,10 @@
 						<!-- Job Listing Details -->
 						<div class="job-listing-details">
 
-							<!-- Logo -->
+							{% comment %} <!-- Logo -->
 							<div class="job-listing-company-logo">
 								<img src="{% static 'images/company-logo-01.png'%}" alt="">
-							</div>
+							</div> {% endcomment %}
 
 							<!-- Details -->
 							<div class="job-listing-description">
@@ -140,7 +120,7 @@
 
 
 <!-- Photo Section -->
-<div class="photo-section" style="background-image: url('{% static "images/section-background.jpg"%}');">
+<div class="photo-section" style="background-image: url('{% static "images/images.png"%}');">
 
 	<!-- Infobox -->
 	<div class="text-content white-font">
@@ -163,7 +143,7 @@
 <!-- Photo Section / End -->
 
 
-<!-- Recent Blog Posts -->
+{% comment %} <!-- Recent Blog Posts -->
 <div class="section padding-top-65 padding-bottom-50">
 	<div class="container">
 		<div class="row">
@@ -277,7 +257,7 @@
 			</div>
 		</div>
 	</div>
-</div>
+</div> {% endcomment %}
 
 
 
