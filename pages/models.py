@@ -3,14 +3,7 @@ from django.contrib.auth.models import User
 from django_elasticsearch_dsl import TextField
 # Create your models here.
 
-class Applicant_Profile(models.Model):
-    ID = models.AutoField(primary_key=True, editable = False),
-    exp = models.CharField(max_length=255, null=True, blank = True)
-    skill = models.CharField(max_length=255, null=True, blank = True)
-    graduate = models.CharField(max_length=255, null=True, blank = True)
-    other = models.CharField(max_length=255, null=True, blank = True)
-    def __str__(self):
-        return self.ID
+
 
 class Applicant(models.Model):
     ID = models.AutoField(primary_key=True, editable = False)
@@ -20,9 +13,19 @@ class Applicant(models.Model):
     a_file_upload = models.FileField()
     a_password = models.CharField(max_length=255, null = True, blank= True)
     a_account_status = models.BooleanField(False)
-    a_profile =  models.ForeignKey(Applicant_Profile, on_delete=models.SET_NULL,null= True, blank= True)
     def __str__(self):
         return self.a_name
+
+        
+class Applicant_Profile(models.Model):
+    ID = models.AutoField(primary_key=True, editable = False),
+    exp = models.CharField(max_length=255, null=True, blank = True)
+    skill = models.CharField(max_length=255, null=True, blank = True)
+    graduate = models.CharField(max_length=255, null=True, blank = True)
+    other = models.CharField(max_length=255, null=True, blank = True)
+    applicant_ID =  models.ForeignKey(Applicant, on_delete=models.SET_NULL,null= True, blank= True)
+    def __str__(self):
+        return self.ID
 
 class Recruiter(models.Model):
     ID = models.AutoField(primary_key=True, editable= True)
@@ -58,7 +61,4 @@ class ApplicationDetail(models.Model):
     applicant_id = models.ForeignKey(Applicant, on_delete=models.SET_NULL,null= True, blank= True)
     job_post_id = models.ForeignKey(JobPost, on_delete= models.SET_NULL,null= True, blank= True)
     application_status = models.BooleanField(False)
-
-    def __str__(self):
-        return self.applicant_id
 

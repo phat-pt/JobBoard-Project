@@ -138,11 +138,18 @@ STATICFILES_DIRS = [
     BASE_DIR / "jobsearch/static",
 ]
 
+
+#Media Files
 MEDIA_URL = '/media/'
 
-MEDIA_ROOT =  BASE_DIR / 'media'
+MEDIA_ROOT =  BASE_DIR / 'media' 
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 SUMMERNOTE_THEME = 'bs4'    # Use Bootstrap4 theme
 
+#Messages
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.ERROR : 'danger',
+}

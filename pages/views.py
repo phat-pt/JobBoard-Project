@@ -1,4 +1,5 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
 from .models import JobPost
 from django.core.paginator import EmptyPage, Paginator, PageNotAnInteger
 from django_elasticsearch_dsl import Document
@@ -107,4 +108,14 @@ def search(request):
 
     return render(request, 'jobs/search.html', {'jobs': jobs})
 
+
+def login(request):
+    return render(request, 'account/login.html')
+
+def register(request):
+    if request.method == 'POST':
+        messages.error(request, 'This is error message')
+        return redirect('register')
+    else:
+        return render(request, 'account/register.html')
 
