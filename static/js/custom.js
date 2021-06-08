@@ -1300,6 +1300,9 @@ $(document).ready(function(){
 		 fixedContentPos: false
 	});
 
+	$(document).ready(function () {
+		$(".summernote").summernote();
+	});
 // ------------------ End Document ------------------ //
 });
 

@@ -27,6 +27,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_REDIRECT_URL = 'home'
+
+#User
+# AUTH_USER_MODEL = 'pages.Applicant'
 
 # Application definition
 
@@ -37,9 +41,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_cleanup.apps.CleanupConfig',
     'pages.apps.PagesConfig',
+    'applicant.apps.ApplicantConfig',
+    'employer.apps.EmployerConfig',
     'django_summernote',
-    'django_elasticsearch_dsl'
+    'django_elasticsearch_dsl',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    #Providers
+    'allauth.socialaccount.providers.google',
 ]
 
 ELASTICSEARCH_DSL={
@@ -151,5 +165,7 @@ SUMMERNOTE_THEME = 'bs4'    # Use Bootstrap4 theme
 #Messages
 from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
-    messages.ERROR : 'danger',
+    messages.ERROR : 'error',
 }
+
+SITE_ID = 2

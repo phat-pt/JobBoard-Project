@@ -1,16 +1,20 @@
 from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
-from pages.models import JobPost, Recruiter
+from employer.models import *
+from elasticsearch_dsl import analyzer, tokenizer
 
+# Analyzer for searched term indexing
+my_completion_analyzer = analyzer('my_analyzer',
+    tokenizer=tokenizer('trigram', 'edge_ngram', min_gram=3, max_gram=20, token_chars=['letter', 'digit']),
+    char_filter=['html_strip'], # remove html entities
+    filter=["lowercase", "snowball"]
+)
 
 @registry.register_document
 class JobPostDocument(Document):
-
-    jobpost = fields.NestedField(properties={
-        'job_description': fields.TextField(),
-        'job_summary': fields.TextField(),
-        'pk': fields.IntegerField(),
-    })
+    
+    job_title = fields.CompletionField()
+    job_location = fields.CompletionField()
 
     class Index:
         # Name of the Elasticsearch index
@@ -23,8 +27,4 @@ class JobPostDocument(Document):
         model = JobPost # The model associated with this Document
 
         # The fields of the model you want to be indexed in Elasticsearch
-        fields = ['job_location', 'job_apply_url', 'is_active','ID','job_description',
-        'job_salary','job_summary','job_time','job_title','company_name','company_url','job_type']
-
-        related_models = [Recruiter]
-    
+        fields = ['ID','job_description','job_salary','job_summary','job_time','company_name','job_type']

@@ -29,17 +29,17 @@
 					<form action = "{% url 'search' %}" class="intro-banner-search-form margin-top-95" >
 						<!-- Search Field -->
 						<div class="intro-search-field ">
-							<label for="intro-location" class="field-title ripple-effect">Where?</label>
+							<label for="autoc-location" class="field-title ripple-effect">Where?</label>
 							<div class="input-with-icon">
-								<input id="intro-location" type="text" placeholder="Remote" name="location" value="{{ request.GET.location }}"">
+								<input id="autoc-location" type="text" placeholder="Remote" name="location" value="{{ request.GET.location }}">
 								<i class="icon-material-outline-location-on"></i>
 							</div>
 						</div>
 
 						<!-- Search Field -->
 						<div class="intro-search-field">
-							<label for ="intro-keywords" class="field-title ripple-effect">What job you want?</label>
-							<input id="intro-keywords" type="text" placeholder="Job Title or Keywords" name = "keyword" value="{{ request.GET.keyword }}"">
+							<label for ="autoc-job" class="field-title ripple-effect">What job you want?</label>
+							<input id="autoc-job" type="text" placeholder="Job Title or Keywords" name = "keyword" value="{{ request.GET.keyword }}">
 						</div>
 
 						<!-- Button -->
@@ -54,9 +54,7 @@
 	
 	<!-- Video Container -->
 	<div class="video-container" style="background-image: url('{% static "images/JobSlide.jpg"%}');">
-		<video loop="" autoplay="" muted="">
-			<source src="images/home-video-background.mp4" type="video/mp4">
-		</video>
+
 	</div>
 
 </div>
@@ -68,7 +66,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-xl-12">
-				
+				{% include 'includes/messages.html' %}
 				<!-- Section Headline -->
 				<div class="section-headline margin-top-0 margin-bottom-35">
 					<h3>Recent Jobs</h3>
@@ -96,7 +94,7 @@
 								<!-- Job Listing Footer -->
 								<div class="job-listing-footer">
 									<ul>
-										<li><i class="icon-material-outline-business"></i> {{ job.company_name }} <div class="verified-badge" title="Verified Employer" data-tippy-placement="top"></div></li>
+										<li><i class="icon-material-outline-business"></i> {{ job.company_name }} <div data-tippy-placement="top"></div></li>
 										<li><i class="icon-material-outline-location-on"></i> {{ job.job_location }}</li>
 										<li><i class="icon-material-outline-business-center"></i> {{ job.job_type }}</li>
 										<li><i class="icon-material-outline-access-time"></i> {{ job.job_time }}</li> 
@@ -259,7 +257,5 @@
 	</div>
 </div> {% endcomment %}
 
-
-
-
+{% include 'includes/footer.html' %}
 {%endblock%}

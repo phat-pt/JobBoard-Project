@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+{% block content%}
+{%load static%}
+{% if user.is_authenticated%}
+<!-- Dashboard Container -->
+<div class="dashboard-container">
+
+
+	<!-- Dashboard Content
+	================================================== -->
+	<div class="dashboard-content-container" data-simplebar>
+		<form action="{% url 'profile' %}" method="POST" class="dashboard-content-inner"  id="profile-account-form" enctype="multipart/form-data">
+			{% csrf_token %}
+			<!-- Dashboard Headline -->
+			<div class="dashboard-headline">
+				<h3>Settings</h3>
+
+				<!-- Breadcrumbs -->
+				<nav id="breadcrumbs" class="dark">
+					<ul>
+						<li><a href="/">Home</a></li>
+						<li><a href="/profile">Profile</a></li>
+					</ul>
+				</nav>
+			</div>
+			{%include 'includes/messages.html'%}
+			<!-- Row -->
+			<div class="row">
+				
+				<!-- Dashboard Box -->
+				<div class="col-xl-12">
+					<div class="dashboard-box margin-top-0">
+
+						<!-- Headline -->
+						<div class="headline">
+							<h3><i class="icon-material-outline-account-circle"></i> My Account</h3>
+						</div>
+
+						<div class="content with-padding padding-bottom-0">
+
+							<div class="row">
+
+								<div class="col">
+									<div class="row">
+
+										<div class="col-xl-6">
+											<div class="submit-field">
+												<h5>First Name</h5>
+												<input type="text" class="with-border" name = "firstname" value = "{{user.first_name}}">
+											</div>
+										</div>
+
+										<div class="col-xl-6">
+											<div class="submit-field">
+												<h5>Last Name</h5>
+												<input type="text" class="with-border" name = "lastname" value = "{{user.last_name}}">
+											</div>
+										</div>
+
+
+										<div class="col-xl-6">
+											<div class="submit-field">
+												<h5>Email</h5>
+												<input type="text" class="with-border" name = "email" value="{{user.email}}">
+											</div>
+										</div>
+
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+					<!-- Dashboard Box -->
+			<div class="col-xl-12">
+					<div class="dashboard-box">
+
+						<!-- Headline -->
+						<div class="headline">
+							<h3><i class="icon-material-outline-face"></i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">My Profile</font></font></h3>
+						</div>
+
+						<div class="content">
+							<ul class="fields-ul">
+							<li>
+								<div class="row">
+
+									<div class="col-xl-6">
+										<div class="submit-field">
+											<h5><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Skill </font></font><i class="help-icon" data-tippy-placement="right" data-tippy="" data-original-title="Add up to 10 skills"></i></h5>
+
+											<!-- Skills List -->
+											<div class="keywords-container">
+												<div class="keyword-input-container">
+													<input name = "skill" id="skills" type="text" class="keyword-input with-border" placeholder="Ex: Angular, Laravel" value="{{user.profile.skill}}">
+												</div>
+												<div class="clearfix"></div>
+											</div>
+										</div>
+									</div>
+
+									<div class="col-xl-4">
+										<div class="submit-field">
+											<h5><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">CV : </font></font></h5>
+											
+											<!-- Attachments -->
+											<div class="attachment-box ripple-effect">
+												<span><font style="vertical-align: inherit;">
+												<font style="vertical-align: inherit;"></font>
+												</font><a href="{{ user.profile.CV.url }}  "> Show Current CV:  {{ user.profile.CV }}</a> </span>
+												<i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">PDF</font></font></i>
+												<button href="#" class="remove-attachment" data-tippy-placement="top" data-tippy="" data-original-title="Remove"></button>
+											</div>
+											<div class="uploadButton">
+											<label class="uploadButton-button ripple-effect" for="file-upload">Upload Files</label>
+												<input name = "CV" class="uploadButton-input" type="file" accept="image/*, application/pdf" id="file-upload" multiple="">											
+										</div>
+										
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="row">
+									<div class="col-xl-6">
+										<div class="submit-field">
+											<h5><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Tag Line</font></font></h5>
+											<input name = "tagline" type="text" class="with-border" value="{{user.profile.tag_line}}">
+										</div>
+									</div>
+
+									<div class="col-xl-12">
+										<div class="submit-field">
+											<h5><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Introduction</font></font></h5>
+											<textarea name = "introduction" cols="30" rows="5" class="with-border">{{user.profile.introduction}}</textarea>
+										</div>
+									</div>
+
+								</div>
+							</li>
+						</ul>
+						</div>
+					</div>
+				</div>
+
+				<!-- Dashboard Box -->
+				<div class="col-xl-12">
+					<div id="test1" class="dashboard-box">
+
+						<!-- Headline -->
+						<div class="headline">
+							<h3><i class="icon-material-outline-lock"></i> Password & Security</h3>
+						</div>
+
+						<div class="content with-padding">
+							<div class="row">
+								<div class="col-xl-4">
+									<div class="submit-field">
+										<h5>Current Password</h5>
+										<input type="password" class="with-border" name = "current_password">
+									</div>
+								</div>
+
+								<div class="col-xl-4">
+									<div class="submit-field">
+										<h5>New Password</h5>
+										<input type="password" class="with-border" name = "new_password">
+									</div>
+								</div>
+
+								<div class="col-xl-4">
+									<div class="submit-field">
+										<h5>Repeat New Password</h5>
+										<input type="password" class="with-border" name = "repeat_password">
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			
+
+				<button class="button ripple-effect big margin-top-30" type='submit' form="profile-account-form">Save Changes</button>
+
+			</div>
+			<!-- Row / End -->
+
+			<!-- Footer -->
+			<div class="dashboard-footer-spacer"></div>
+			<div class="small-footer margin-top-15">
+				<div class="small-footer-copyrights">
+					© 2018 <strong>Hireo</strong>. All Rights Reserved.
+				</div>
+				<ul class="footer-social-links">
+					<li>
+						<a href="#" title="Facebook" data-tippy-placement="top">
+							<i class="icon-brand-facebook-f"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#" title="Twitter" data-tippy-placement="top">
+							<i class="icon-brand-twitter"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#" title="Google Plus" data-tippy-placement="top">
+							<i class="icon-brand-google-plus-g"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#" title="LinkedIn" data-tippy-placement="top">
+							<i class="icon-brand-linkedin-in"></i>
+						</a>
+					</li>
+				</ul>
+				<div class="clearfix"></div>
+			</div>
+			<!-- Footer / End -->
+
+		</form>
+	</div>
+	<!-- Dashboard Content / End -->
+
+</div>
+<!-- Dashboard Container / End -->
+
+</div>
+
+<!-- Wrapper / End -->
+{%else%}
+    <a href = 'login'> Log In </a>
+{% endif %}
+{% endblock %}

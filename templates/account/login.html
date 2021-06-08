@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block content%}
 {%load static%}
-
+{% load socialaccount %}
+{% providers_media_js %}
 <!-- Titlebar
 ================================================== -->
 <div id="titlebar" class="gradient">
@@ -23,8 +24,6 @@
 		</div>
 	</div>
 </div>
-
-
 <!-- Page Content
 ================================================== -->
 <div class="container">
@@ -36,32 +35,36 @@
 				<!-- Welcome Text -->
 				<div class="welcome-text">
 					<h3>We're glad to see you again!</h3>
-					<span>Don't have an account? <a href="pages-register.html">Sign Up!</a></span>
+					<span>Don't have an account? <a href="register">Sign Up!</a></span>
 				</div>
-					
+			 	{% include 'includes/messages.html' %}
 				<!-- Form -->
 				<form action = "{% url 'login' %}" method="post" id="login-form"  >
+					{% csrf_token %}
 					<div class="input-with-icon-left">
 						<i class="icon-material-baseline-mail-outline"></i>
-						<input type="text" class="input-text with-border" name="emailaddress" id="emailaddress" placeholder="Email Address" required/>
+						<input type="text" class="input-text with-border" name="username" placeholder="Username" required/>
 					</div>
 
 					<div class="input-with-icon-left">
 						<i class="icon-material-outline-lock"></i>
-						<input type="password" class="input-text with-border" name="password" id="password" placeholder="Password" required/>
+						<input type="password" class="input-text with-border" name="password" placeholder="Password" required/>
 					</div>
 					<a href="#" class="forgot-password">Forgot Password?</a>
 				</form>
 				
 				<!-- Button -->
-				<button class="button full-width button-sliding-icon ripple-effect margin-top-10" type="submit" form="login-form">Log In <i class="icon-material-outline-arrow-right-alt"></i></button>
+				{% comment %}   {% endcomment %}
 				
-				{% comment %} <!-- Social Login -->
+				<!-- Social Login -->
 				<div class="social-login-separator"><span>or</span></div>
 				<div class="social-login-buttons">
-					<button class="facebook-login ripple-effect"><i class="icon-brand-facebook-f"></i> Log In via Facebook</button>
-					<button class="google-login ripple-effect"><i class="icon-brand-google-plus-g"></i> Log In via Google+</button>
-				</div> {% endcomment %}
+					<button class="facebook-login ripple-effect" type="submit" form="login-form">Log In <i class="icon-material-outline-arrow-right-alt"></i> </button>
+					<form action = "{% provider_login_url 'google' %}" id="google-login-form">
+						<input type='hidden'> 
+					</form>
+					<button class="google-login ripple-effect" form="google-login-form"><i class=" icon-brand-google-plus-g"></i> Log In via Google+ </button>
+				</div>
 			</div>
 
 		</div>
@@ -71,4 +74,6 @@
 <!-- Spacer -->
 <div class="margin-top-70"></div>
 <!-- Spacer / End-->
+
+{% include 'includes/footer.html' %}
 {%endblock%}
