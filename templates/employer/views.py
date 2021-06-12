@@ -250,8 +250,7 @@ def employer_forgot_password(request):
             [r_email],
         )
         email.send(fail_silently=False)
-        messages.success(request, "Check your mail to reset password")
-        return redirect('employer_forgot_password')
+
     return render(request, 'employer/forgotpassword.html')
 
 
@@ -365,9 +364,6 @@ def employer_profile(request):
 @user_passes_test(lambda u: u.groups.filter(name='Applicant').count() == 0, login_url='/404')
 def applicant_list(request):
     applicants = User.objects.filter(groups__name='Applicant').all()
-    paginator = Paginator(applicants, 5)
-    page = request.GET.get('page')
-    applicants = paginator.get_page(page)
     return render(request, 'employer/applicants.html', {'applicants': applicants})
 
 @login_required
@@ -376,6 +372,7 @@ def applicant_search(request):
     r_keyword = request.GET.get('keyword',"")
     r_location = request.GET.get('location',"")
     r_skill = request.GET.get('skill', "")
+    print(r_skill)
     if r_keyword:
         applicants = User.objects.filter(groups__name='Applicant').filter(profile__tag_line__icontains=r_keyword)
     else:

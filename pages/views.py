@@ -1,7 +1,9 @@
+from django.db.models.query import RawQuerySet
+from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse, request
 from django.contrib import messages, auth
-from employer.models import JobPost
+from employer.models import Employer, JobPost
 from applicant.models import Profile
 from django.core.paginator import EmptyPage, Paginator, PageNotAnInteger, InvalidPage
 from django_elasticsearch_dsl import Document, fields
@@ -13,7 +15,9 @@ from django.contrib.auth import authenticate, login
 from datetime import date
 from django import template
 from django.contrib.auth.models import Group 
-
+from django.core.mail import send_mail, EmailMessage
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.http import HttpResponseRedirect
 def home(request):
     jobs = JobPost.objects.all()[:5]
 
@@ -64,7 +68,7 @@ def jobs(request):
     data = {
         'jobs' : paged_jobs,
     }
-    return render(request, 'jobs/search.html', data)
+    return render(request, 'pages/search.html', data)
 
 def job_detail(request, id):
     single_job = get_object_or_404(JobPost, pk= id)
@@ -181,7 +185,43 @@ def search(request):
     page = request.GET.get('page')
     jobs = paginator.get_page(page)
     page_obj = paginator.get_page(jobs)
-    return render(request, 'jobs/search.html', {'jobs': jobs, 'page_obj': page_obj})
+    return render(request, 'pages/search.html', {'jobs': jobs, 'page_obj': page_obj})
 
+def company_detail(request, id):
+    company = get_object_or_404(Employer, pk = id)
+    jobs = JobPost.objects.filter(Employer = company.pk).order_by("-job_time").all()[:5]
+    return render(request, 'pages/company.html', {'company': company, 'jobs': jobs})
+
+def apply_job(request, id):
+    single_job = get_object_or_404(JobPost, pk= id)
+    data = {
+        'single_job' : single_job,
+    }
+    return render(request, 'pages/applyjob.html', data)
+
+def send_apply_job(request, id):
+    single_job = get_object_or_404(JobPost, pk= id)
+    employer = Employer.objects.filter(pk = single_job.Employer.id).get()
+    user = User.objects.filter(employer = employer).get()
+    if request.method == 'POST':
+        r_name = request.POST.get("name","")
+        r_email = request.POST.get("email","")
+        r_CV = request.FILES.get('CV',"")
+        r_cover_letter = request.POST.get("coverletter","")
+        print(r_cover_letter, user.email, r_CV)
+        if r_CV and r_cover_letter:
+            email_subject = "[JobSearch] " + r_name + " had applied to your " + single_job.job_title + " job."
+            email_body = "Cover Letter: \n" + r_cover_letter +  "\nEmail Adress: \n" + r_email
+            email = EmailMessage(
+                email_subject,
+                email_body,
+                'norely@semicolon.com',
+                [user.email],
+            )
+            print(user.email)
+            email.attach(r_CV.name, r_CV.read(), r_CV.content_type)
+            email.send(fail_silently=False)
+            messages.success(request, "Apply job successful")
+    return redirect('apply_job', id)
 
 

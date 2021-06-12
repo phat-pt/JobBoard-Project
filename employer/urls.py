@@ -1,5 +1,6 @@
 from django.urls import path, include
 from . import views
+from .views import VerificationView, ResetPasswordVerificationView
 import employer
 
 urlpatterns = [
@@ -9,6 +10,10 @@ urlpatterns = [
     path('employer_logout', views.employer_logout, name = 'employer_logout'),
     path('employer_profile', views.employer_profile, name='employer_profile'),
     path('employer_company_register', views.employer_company_register, name ='employer_company_register'),
+    path('employer_activate/<uidb64>/<token>', VerificationView.as_view(), name='employer_activate'),
+    path('employer_forgot_password', views.employer_forgot_password, name = 'employer_forgot_password'),
+    path('employer_resetpassword/<uidb64>/<token>', ResetPasswordVerificationView.as_view(), name='employer_resetpassword'), 
+    path('employer_reset_password', views.employer_reset_password, name= 'employer_reset_password'),
 
     path('dashboard', views.dashboard, name = 'dashboard'),
     path('jobs', views.job_list, name = 'job_list'),
