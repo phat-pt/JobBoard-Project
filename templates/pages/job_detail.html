@@ -1,12 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
-<!-- Spacer -->
-<div class="margin-top-90"></div>
-<!-- Spacer / End-->
-
-<div class="clearfix"></div>
-<!-- Header Container / End -->
 
 <!-- Titlebar
 ================================================== -->
@@ -21,7 +15,11 @@
 							<h3>{{ single_job.job_title }}</h3>
 							<h5>About the Employer</h5> 
 							<ul>
-								<li><a href="single-company-profile.html"><i class="icon-material-outline-business"></i> {{single_job.company_name}}</a></li>
+								{% if single_job.Employer.id == 1%}
+								<li><i class="icon-material-outline-business"></i> {{single_job.company_name}}</li>
+								{% else%}
+								<li><a href="{% url 'company_detail' single_job.Employer.id %}"><i class="icon-material-outline-business"></i> {{single_job.company_name}}</a></li>
+								{%endif%}
 								<li><div class="star-rating" data-rating="4.9"></div></li>
 								<li><img class="flag" src="images/flags/gb.svg" alt=""> {{single_job.job_location }}</li>
 								<li><div class="verified-badge-with-title">Verified</div></li>
@@ -133,9 +131,11 @@
 		<!-- Sidebar -->
 		<div class="col-xl-4 col-lg-4">
 			<div class="sidebar-container">
-
-				<a href="{{single_job.job_apply_url}}" class="apply-now-button popup-with-zoom-anim">Apply Now <i class="icon-material-outline-arrow-right-alt"></i></a>
-					
+				{% if single_job.job_apply_url != ""%}
+				<a target="_blank" href="{{single_job.job_apply_url}}" class="apply-now-button popup-with-zoom-anim">Apply Now <i class="icon-material-outline-arrow-right-alt"></i></a>
+				{% else %}
+				<a href="{% url 'apply_job' single_job.ID%}" class="apply-now-button popup-with-zoom-anim">Apply Now <i class="icon-material-outline-arrow-right-alt"></i></a>
+				{% endif %}
 				<!-- Sidebar Widget -->
 				<div class="sidebar-widget">
 					<div class="job-overview">

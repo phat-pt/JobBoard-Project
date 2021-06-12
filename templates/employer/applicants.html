@@ -106,7 +106,7 @@
 
 											<!-- Name -->
 											<div class="freelancer-name">
-												<h4><a href="{% url 'applicant_detail' applicant.id %}">{{applicant.first_name}} {{applicant.last_name}} </a></h4>
+												<h4><a target="_blank" href="{% url 'applicant_detail' applicant.id %}">{{applicant.first_name}} {{applicant.last_name}} </a></h4>
 
 												<!-- Details -->
 												<span class="freelancer-detail-item"><a href="#"><i class="icon-feather-mail"></i> {{applicant.email}}</a></span>
@@ -125,9 +125,57 @@
                             {%endfor%}
 							</ul>
 						</div>
-					</div>
-				</div>
+													<!-- Pagination -->
+							<div class="pagination-container margin-top-60 margin-bottom-60">
+							{% if applicants.has_other_pages %}
+								<nav class="pagination">
+									<ul>
+										{% if applicants.has_previous %}
+									<li class="pagination-arrow">
+									<a href="?page={{applicants.previous_page_number}}
+										{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}
+										{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}
+										{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}">
+										<i class="icon-material-outline-keyboard-arrow-left"></i>
+									</a>
+									</li>
+							{% else %}
+									<li class="pagination-arrow" disabled ><a href="#"><i class="icon-material-outline-keyboard-arrow-left"></i></a></li>
+							{% endif %}
 
+									{% for i in applicants.paginator.page_range %}
+								{% if applicants.number == i%}
+									<li><a class="current-page"> {{i}}</a></li>
+									<li><a class="pagination-arrow"> of</a></li>
+									<li><a class="current-page">{{ applicants.paginator.num_pages }}</a></li>
+								{% comment %} {%else%}
+									<li>
+									{<a href="?page={{i}}
+									{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}
+									{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}
+									{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}">{{i}}</a></li> {% endcomment %}
+								{%endif %} 
+							{%endfor%}
+
+									
+							{% if applicants.has_next %}
+									<li class="pagination-arrow"><a href="?page={{ applicants.next_page_number }}
+									{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}
+									{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}
+									{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}">
+									<i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
+							{% else %}
+									<li class="pagination-arrow" disabled ><a href="#"><i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
+							{% endif %}
+
+								</ul>
+							</nav>
+						{% endif %} 
+							</div>
+					</div>
+					
+				</div>
+				
 			</div>
 			<!-- Row / End -->
 

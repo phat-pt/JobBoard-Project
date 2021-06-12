@@ -169,3 +169,11 @@ MESSAGE_TAGS = {
 }
 
 SITE_ID = 2
+
+#Email Stuff
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'loopache@gmail.com'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'loopache@gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_PASSWORD = '025908560@Bc'

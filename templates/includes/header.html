@@ -11,12 +11,11 @@
 			<!-- Left Side Content -->
 			<div class="left-side">
 				
+				{% if request.user|has_group:"Applicant" %}
 				<!-- Logo -->
 				<div id="logo">
 					<a href="/"><img src="{% static 'images/job-search-logo.jpg'%}" alt=""></a>
-					
 				</div>
-
 				<!-- Main Navigation -->
 				<nav id="navigation">
 					<ul id="responsive">
@@ -27,6 +26,35 @@
 				</nav>
 				<div class="clearfix"></div>
 				<!-- Main Navigation / End -->
+				{% elif request.user|has_group:"Employer"%}
+				<div id="logo">
+					<a href="{% url 'dashboard' %}"><img src="{% static 'images/job-search-logo.jpg'%}" alt=""></a>
+				</div>
+					<nav id="navigation">
+					<ul id="responsive">
+
+						<li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+						<li><a href="{% url 'applicant_list' %}">Browse a Applicant</a></li>
+					</ul>
+				</nav>
+				<div class="clearfix"></div>
+				{% else %}
+						<!-- Logo -->
+					<div id="logo">
+						<a href="/"><img src="{% static 'images/job-search-logo.jpg'%}" alt=""></a>
+					</div>
+					<!-- Main Navigation -->
+					<nav id="navigation">
+						<ul id="responsive">
+
+							<li><a href="/">Home</a></li>
+							<li><a href="/jobs">Browse a Job</a></li>
+						</ul>
+					</nav>
+					<div class="clearfix"></div>
+					<!-- Main Navigation / End -->
+				{% endif %}
+				
 				
 			</div>
 			<!-- Left Side Content / End -->
@@ -61,7 +89,7 @@
 						</a>
 					</div>
 					<div class="header-widget">
-						<a href="javascript:{document.getElementById('employer_logout').submit()}" class="popup-with-zoom-anim log-in-button">
+						<a href="javascript:{document.getElementById('logout').submit()}" class="popup-with-zoom-anim log-in-button">
 							<i class="icon-feather-log-in"></i> 
 							<span>Logout</span>
 						</a>
