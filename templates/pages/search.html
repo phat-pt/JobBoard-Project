@@ -71,7 +71,7 @@
 		</form>
 		<div action = "{% url 'search' %}" class="col-xl-9 col-lg-8 content-left-offset">
 
-			<h3 class="page-title">Search Result</h3>
+			<h3 class="page-title">Search Result - {{total}} found</h3>
 
 			<div class="notify-box margin-top-15">
 				{% comment %} <div class="switch-container">
@@ -154,7 +154,8 @@
 									<a href="?page={{jobs.previous_page_number}}
 										{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}
 										{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}
-										{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}">
+										{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}
+										{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">
 										<i class="icon-material-outline-keyboard-arrow-left"></i>
 									</a>
 									</li>
@@ -180,7 +181,8 @@
 									<li class="pagination-arrow"><a href="?page={{ jobs.next_page_number }}
 									{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}
 									{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}
-									{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}">
+									{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}
+									{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">
 									<i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
 							{% else %}
 									<li class="pagination-arrow" disabled ><a href="#"><i class="icon-material-outline-keyboard-arrow-right"></i></a></li>

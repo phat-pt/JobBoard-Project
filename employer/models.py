@@ -33,6 +33,6 @@ class JobPost(models.Model):
 
 class Bookmark(models.Model):
     ID = models.AutoField(primary_key=True, editable = False)
-    Employer =  models.ForeignKey(Employer, on_delete=models.SET_NULL,null= True, blank= True)
-    Applicant =  models.ForeignKey(User, on_delete=models.SET_NULL,null= True, blank= True)
+    Employer =  models.ForeignKey(Employer, on_delete=models.CASCADE,null= True, blank= True)
+    Applicant =  models.ForeignKey(User, on_delete=models.CASCADE,null= True, blank= True)
     is_active = models.BooleanField(True)

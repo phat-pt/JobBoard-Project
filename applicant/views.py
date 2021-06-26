@@ -19,6 +19,8 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.sites.shortcuts import get_current_site
 from .utils import token_generator
 
+from django.contrib.auth.decorators import login_required, user_passes_test
+
 # Create your views here.
 def login(request):
     if request.method == 'POST':
@@ -163,10 +165,14 @@ def logout(request):
         return redirect('home')
     return redirect('home')
 
+@login_required
+@user_passes_test(lambda u: u.groups.filter(name='Employer').count() == 0, login_url='/applicant_404')
 def profile(request):
     if(User.is_authenticated):
         user = request.user
         profile = Profile.objects.filter(user=request.user).first()
+        if profile.CV == None:
+            Profile.objects.update(user=user, CV = "None")
         if request.method == 'POST':
 
             r_firstname = request.POST['firstname']
