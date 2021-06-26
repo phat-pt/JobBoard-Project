@@ -1,3 +1,5 @@
+from os import pipe
+from typing import Match
 from django.db.models.query import RawQuerySet
 from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -6,7 +8,6 @@ from django.contrib import messages, auth
 from employer.models import Employer, JobPost
 from applicant.models import Profile
 from django.core.paginator import EmptyPage, Paginator, PageNotAnInteger, InvalidPage
-from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
 from elasticsearch_dsl.query import MultiMatch
 from .documents import JobPostDocument
@@ -17,30 +18,49 @@ from django import template
 from django.contrib.auth.models import Group 
 from django.core.mail import send_mail, EmailMessage
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.http import HttpResponseRedirect
-def home(request):
-    jobs = JobPost.objects.all()[:5]
+import json
 
+def home(request):
+    user = request.user
+    if (user.is_authenticated):
+        if user.groups.filter(name='Applicant').exists() == False and user.groups.filter(name='Employer').exists() == False:
+            applicant_group = Group.objects.get(name='Applicant') 
+            applicant_group.user_set.add(user)
+            user.is_staff = False   
+            user.save()
+    jobs = JobPost.objects.all()[:5]
     #AutoComplete
     if "term" in request.GET:
         # qs = JobPost.objects.filter(job_title__istartswith=request.GET.get("term"))
         es_title = JobPostDocument.search().suggest( 'autoc', request.GET.get("term") ,  completion={ 'field': 'job_title', 'skip_duplicates': True }).execute().to_dict()
-        es_location = JobPostDocument.search().suggest( 'autoc', request.GET.get("term") ,  completion={ 'field': 'job_location', 'skip_duplicates': True }).execute().to_dict()
-        print([suggest['text'] for suggest in es_title['suggest']['autoc'][0]['options']])
-        print([suggest['text'] for suggest in es_location['suggest']['autoc'][0]['options']])
-        job_titles_locations = [suggest['text'] for suggest in es_title['suggest']['autoc'][0]['options']]+ [suggest['text'] for suggest in es_location['suggest']['autoc'][0]['options']]
+        es_location = JobPost.objects.filter(job_location__icontains = request.GET.get("term")).all()[:5]
+        # print([suggest['text'] for suggest in es_title['suggest']['autoc'][0]['options']])
+        # print([suggest['text'] for suggest in es_location['suggest']['autoc'][0]['options']])
+        
+        job_titles_locations = [suggest['text'] for suggest in es_title['suggest']['autoc'][0]['options']] + [job.job_location for job in es_location]
         return JsonResponse(job_titles_locations, safe=False)
+    if (user.is_authenticated):
+        profile = Profile.objects.filter(user=request.user).first()
+        if profile:
+            if profile.skill == None:
+                jobs = JobPost.objects.all()[:5]
+            else:
+                s = JobPostDocument.search().query(MultiMatch(query = profile.skill ,fields=['job_description', 'job_title']))
+                s = s[0:5]
+                jobs = s.execute()
+        else:
+            Profile.objects.create(user=user)
     data = {
         'jobs' : jobs,
     }
     return render(request, 'pages/home.html', data)
 
+def page_404_employer(request):
+    messages.error(request,"Please login as Employer!!")
+    return render(request, 'pages/404.html')
 
-
-def contact(request):
-    return render(request, 'pages/contact.html')
-
-def page_404(request):
+def page_404_applicant(request):
+    messages.error(request,"Please login as Applicant!!")
     return render(request, 'pages/404.html')
 
 register = template.Library() 
@@ -72,102 +92,50 @@ def jobs(request):
 
 def job_detail(request, id):
     single_job = get_object_or_404(JobPost, pk= id)
-    data = {
-        'single_job' : single_job,
-    }
-    return render(request, 'pages/job_detail.html', data)
-
-def basic_search(keyword, location):
-    if keyword and location == "":
-        location = "remote"
-        query1 = MultiMatch(query=keyword,  fields=['job_description', 'job_title'])
-        query2 = MultiMatch(query=location,  fields=['job_location'])
-        s = JobPostDocument.search().query(query1 | query2)
-    elif location and keyword == "":
-        query1 = MultiMatch(query=keyword,  fields=['job_description', 'job_title'])
-        query2 = MultiMatch(query=location,  fields=['job_location'])
-        s = JobPostDocument.search().query(query2 | query1)
-    elif location and keyword:
-        query1 = MultiMatch(query=keyword,  fields=['job_description', 'job_title'])
-        query2 = MultiMatch(query=location,  fields=['job_location'])
-        s = JobPostDocument.search().query(query1 | query2)
-    else:
-        location = "remote"
-        query1 = MultiMatch(query=keyword,  fields=['job_description', 'job_title'])
-        query2 = MultiMatch(query=location,  fields=['job_location'])
-        s = JobPostDocument.search().query(query2 | query1)
-
-    total = s.count()
-    s= s[0:total]
-    return s.execute()
+    es_title = JobPostDocument.search().suggest( 'autoc', single_job.job_title ,  completion={ 'field': 'job_title', 'skip_duplicates': True }).execute().to_dict()
+    suggested_jobs = [suggest['_source'] for suggest in es_title['suggest']['autoc'][0]['options']]
+    return render(request, 'pages/job_detail.html', {'single_job' : single_job, 'suggested_job' : suggested_jobs[0:4]})
 
 def advanced_search(keyword, location, jobtype, min_salary, max_salary):
+    query1 = MultiMatch(query=keyword,  fields=['job_description', 'job_title'])
+    query2 = MultiMatch(query=location,  fields=['job_location'], fuzziness='AUTO')
+    query3 = MultiMatch(query=jobtype, fields=['job_type'])
+    query4 = MultiMatch(query="$" +min_salary + "$" +max_salary, fields=['job_salary'])
     if keyword and location == "":
         location = "remote"
-        query1 = MultiMatch(query=keyword,  fields=['job_description', 'job_title'])
         query2 = MultiMatch(query=location,  fields=['job_location'])
-        query3 = MultiMatch(query=jobtype, fields=['job_type'])
-        query4 = MultiMatch(query="$" +min_salary + "$" +max_salary, fields=['job_salary'])
-        s = JobPostDocument.search().query(query1 | query2 | query3| query4)
+        s = JobPostDocument.search().query(query1 | query2 | query3 | query4)
     elif location and keyword == "":
-        query2 = MultiMatch(query=location,  fields=['job_location'])
-        query3 = MultiMatch(query=jobtype, fields=['job_type'])
-        query4 = MultiMatch(query="$" +min_salary + "$" +max_salary, fields=['job_salary'])
-        s = JobPostDocument.search().query(query2 | query3| query4)
+        s = JobPostDocument.search().query(query2| query3 | query4)
     elif location and keyword:
-        query1 = MultiMatch(query=keyword,  fields=['job_description', 'job_title'])
-        query2 = MultiMatch(query=location,  fields=['job_location'])
-        query3 = MultiMatch(query=jobtype, fields=['job_type'])
-        query4 = MultiMatch(query="$" +min_salary + "$" +max_salary, fields=['job_salary'])
-        s = JobPostDocument.search().query(query1 | query2 | query3| query4)
+        s = JobPostDocument.search().query(query1 & query2 | query3| query4)
     else:
         location = "remote"
         query2 = MultiMatch(query=location,  fields=['job_location'])
-        query3 = MultiMatch(query=jobtype, fields=['job_type'])
-        query4 = MultiMatch(query="$" +min_salary + "$" +max_salary, fields=['job_salary'])
         s = JobPostDocument.search().query(query2 | query3| query4)
     total = s.count()
     s= s[0:total]
-    return s.execute()
+    return s.execute(), total
 
-def sorted_advanced_search(keyword, location, jobtype):
+def sorted_advanced_search(keyword, location, jobtype, min_salary, max_salary):
+    query1 = MultiMatch(query=keyword,  fields=['job_description', 'job_title'])
+    query2 = MultiMatch(query=location,  fields=['job_location'])
+    query3 = MultiMatch(query=jobtype, fields=['job_type'])
+    query4 = MultiMatch(query="$" +min_salary + "$" +max_salary, fields=['job_salary'])
     if keyword and location == "":
         location = "remote"
-        query1 = MultiMatch(query=keyword,  fields=['job_description', 'job_title'])
-        query2 = MultiMatch(query=location,  fields=['job_location'])
-        query3 = MultiMatch(query=jobtype, fields=['job_type'])
-        s = JobPostDocument.search().query(query1 | query2 | query3).sort({'job_time': "desc"})
+        s = JobPostDocument.search().query(query1 | query2 | query3| query4).sort({'job_time': "desc"})
     elif location and keyword == "":
-        query2 = MultiMatch(query=location,  fields=['job_location'])
-        query3 = MultiMatch(query=jobtype, fields=['job_type'])
-        s = JobPostDocument.search().query(query2 | query3)
+        s = JobPostDocument.search().query(query2 | query3| query4).sort({'job_time': "desc"})
     elif location and keyword:
-        query1 = MultiMatch(query=keyword,  fields=['job_description', 'job_title'])
-        query2 = MultiMatch(query=location,  fields=['job_location'])
-        query3 = MultiMatch(query=jobtype, fields=['job_type'])
-        s = JobPostDocument.search().query(query1 | query2 | query3).sort({'job_time': "desc"})
+        s = JobPostDocument.search().query(query1 & query2 | query3| query4).sort({'job_time': "desc"})
     else:
         location = "remote"
-        query2 = MultiMatch(query=location,  fields=['job_location'])
-        query3 = MultiMatch(query=jobtype, fields=['job_type'])
-        s = JobPostDocument.search().query(query2 | query3).sort({'job_time': "desc"})
+        s = JobPostDocument.search().query(query2 | query3 |query4).sort({'job_time': "desc"})
     total = s.count()
     s= s[0:total]
-    return s.execute()
+    return s.execute(), total
 
-def jobTypeToText(jobtype):
-    if jobtype == "1":
-        return "Full-time"
-    elif jobtype == "2":
-        return "Part-time"
-    elif jobtype == "3":
-        return "Intership"
-    elif jobtype == "4":
-        return "Temporary"
-    elif jobtype == "5":
-        return "Contract"
-    else:
-        return "Full-time"
 
 def search(request):
     keyword = request.GET.get('keyword',"")
@@ -178,14 +146,15 @@ def search(request):
     max_salary = request.GET.get('max',"")
 
     if sort:
-        jobs = sorted_advanced_search(keyword, location, jobtype)
+        jobs, total = sorted_advanced_search(keyword, location, jobtype, min_salary, max_salary)
     else:
-        jobs = advanced_search(keyword, location, jobtype,  min_salary, max_salary)
+        jobs, total = advanced_search(keyword, location, jobtype,  min_salary, max_salary)
+
     paginator = Paginator(jobs, 20)
     page = request.GET.get('page')
     jobs = paginator.get_page(page)
     page_obj = paginator.get_page(jobs)
-    return render(request, 'pages/search.html', {'jobs': jobs, 'page_obj': page_obj})
+    return render(request, 'pages/search.html', {'jobs': jobs, 'page_obj': page_obj, 'total' : total})
 
 def company_detail(request, id):
     company = get_object_or_404(Employer, pk = id)
@@ -193,11 +162,14 @@ def company_detail(request, id):
     return render(request, 'pages/company.html', {'company': company, 'jobs': jobs})
 
 def apply_job(request, id):
-    single_job = get_object_or_404(JobPost, pk= id)
-    data = {
-        'single_job' : single_job,
-    }
-    return render(request, 'pages/applyjob.html', data)
+    if(request.user.is_authenticated):
+        single_job = get_object_or_404(JobPost, pk= id)
+        data = {
+            'single_job' : single_job,
+        }
+        return render(request, 'pages/applyjob.html', data)
+    else:
+        return redirect('login')
 
 def send_apply_job(request, id):
     single_job = get_object_or_404(JobPost, pk= id)

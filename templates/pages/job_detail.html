@@ -10,7 +10,6 @@
 			<div class="col-md-12">
 				<div class="single-page-header-inner">
 					<div class="left-side">
-						<div class="header-image"><a href="single-company-profile.html"><img src="{% static 'images/company-logo-03a.png'%}" alt=""></a></div>
 						<div class="header-details">
 							<h3>{{ single_job.job_title }}</h3>
 							<h5>About the Employer</h5> 
@@ -20,9 +19,7 @@
 								{% else%}
 								<li><a href="{% url 'company_detail' single_job.Employer.id %}"><i class="icon-material-outline-business"></i> {{single_job.company_name}}</a></li>
 								{%endif%}
-								<li><div class="star-rating" data-rating="4.9"></div></li>
 								<li><img class="flag" src="images/flags/gb.svg" alt=""> {{single_job.job_location }}</li>
-								<li><div class="verified-badge-with-title">Verified</div></li>
 							</ul>
 						</div>
 					</div>
@@ -65,62 +62,33 @@
 
 				<!-- Listings Container -->
 				<div class="listings-container grid-layout">
-
+				{% for job in suggested_job%}
 						<!-- Job Listing -->
-						<a href="#" class="job-listing">
+						<a href="{{job.ID}}" class="job-listing">
 
 							<!-- Job Listing Details -->
 							<div class="job-listing-details">
 								<!-- Logo -->
-								<div class="job-listing-company-logo">
-									<img src="images/company-logo-02.png" alt="">
-								</div>
 
 								<!-- Details -->
 								<div class="job-listing-description">
-									<h4 class="job-listing-company">Coffee</h4>
-									<h3 class="job-listing-title">Barista and Cashier</h3>
+									<h4 class="job-listing-company">{{job.company_name}}</h4>
+									<h3 class="job-listing-title">{{job.job_title}}</h3>
 								</div>
 							</div>
 
 							<!-- Job Listing Footer -->
 							<div class="job-listing-footer">
 								<ul>
-									<li><i class="icon-material-outline-location-on"></i> San Francisco</li>
-									<li><i class="icon-material-outline-business-center"></i> Full Time</li>
-									<li><i class="icon-material-outline-account-balance-wallet"></i> $35000-$38000</li>
-									<li><i class="icon-material-outline-access-time"></i> 2 days ago</li>
+									<li><i class="icon-material-outline-location-on"></i>{{job.job_location}}</li>
+									<li><i class="icon-material-outline-business-center"></i> {{job.job_type}}</li>
+									<li><i class="icon-material-outline-account-balance-wallet"></i> {{job.job_salary}}</li>
+									<li><i class="icon-material-outline-access-time"></i>{{job.job_time}}</li>
 								</ul>
 							</div>
 						</a>
 
-						<!-- Job Listing -->
-						<a href="#" class="job-listing">
-
-							<!-- Job Listing Details -->
-							<div class="job-listing-details">
-								<!-- Logo -->
-								<div class="job-listing-company-logo">
-									<img src="images/company-logo-03.png" alt="">
-								</div>
-
-								<!-- Details -->
-								<div class="job-listing-description">
-									<h4 class="job-listing-company">King <span class="verified-badge" title="Verified Employer" data-tippy-placement="top"></span></h4>
-									<h3 class="job-listing-title">Restaurant Manager</h3>
-								</div>
-							</div>
-
-							<!-- Job Listing Footer -->
-							<div class="job-listing-footer">
-								<ul>
-									<li><i class="icon-material-outline-location-on"></i> San Francisco</li>
-									<li><i class="icon-material-outline-business-center"></i> Full Time</li>
-									<li><i class="icon-material-outline-account-balance-wallet"></i> $35000-$38000</li>
-									<li><i class="icon-material-outline-access-time"></i> 2 days ago</li>
-								</ul>
-							</div>
-						</a>
+				{% endfor%}
 					</div>
 					<!-- Listings Container / End -->
 

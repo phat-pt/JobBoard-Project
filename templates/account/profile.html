@@ -109,7 +109,11 @@
 											<div class="attachment-box ripple-effect">
 												<span><font style="vertical-align: inherit;">
 												<font style="vertical-align: inherit;"></font>
+												{% if user.profile.CV %}
 												</font><a href="{{ user.profile.CV.url }}  "> Show Current CV:  {{ user.profile.CV }}</a> </span>
+												{% else %}
+												</font><a href=""> Show Current CV: </a> </span>
+												{% endif %}
 												<i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">PDF</font></font></i>
 												<button href="#" class="remove-attachment" data-tippy-placement="top" data-tippy="" data-original-title="Remove"></button>
 											</div>

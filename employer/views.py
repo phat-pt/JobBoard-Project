@@ -15,10 +15,12 @@ from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
 from elasticsearch_dsl.query import MultiMatch
 from pages.documents import JobPostDocument
+from .documents import ProfileDocument
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponse
 import json
+from django.utils import timezone
 
 from django.core.mail import send_mail, EmailMessage
 from django.urls import reverse
@@ -38,8 +40,7 @@ def dashboard(request):
         jobs = JobPost.objects.filter(Employer = employer).order_by('-job_time').all()[:5]
         job_count = JobPost.objects.filter(Employer = employer).all().count()
         applicant_count = User.objects.filter(groups__name='Applicant').all().count()
-        applicant_join_today = User.objects.filter(groups__name='Applicant').filter(date_joined = date.today().strftime('%Y-%m-%d')).all().count()
-        print(request.user.date_joined)
+        applicant_join_today = User.objects.filter(groups__name='Applicant').filter(date_joined__day=datetime.today().day).all().count()
         return render(request, 'employer/dashboard.html', {"bookmarks" : bookmarks, "jobs":jobs, "applicant_count": applicant_count, "job_count" : job_count ,
         "applicant_join_today": applicant_join_today})
     else:
@@ -144,6 +145,7 @@ def employer_login(request):
         r_username = request.POST['username']
         r_password = request.POST['password']
         user = auth.authenticate(username = r_username, password = r_password)
+        
         try:
             if user.groups.filter(name='Employer'):
                 if user is not None:
@@ -365,6 +367,7 @@ def employer_profile(request):
 @user_passes_test(lambda u: u.groups.filter(name='Applicant').count() == 0, login_url='/404')
 def applicant_list(request):
     applicants = User.objects.filter(groups__name='Applicant').all()
+    print(applicants)
     paginator = Paginator(applicants, 5)
     page = request.GET.get('page')
     applicants = paginator.get_page(page)
@@ -376,8 +379,17 @@ def applicant_search(request):
     r_keyword = request.GET.get('keyword',"")
     r_location = request.GET.get('location',"")
     r_skill = request.GET.get('skill', "")
-    if r_keyword:
-        applicants = User.objects.filter(groups__name='Applicant').filter(profile__tag_line__icontains=r_keyword)
+    if r_keyword or r_location or r_skill:
+        query1 = MultiMatch(query=r_keyword,  fields=['tag_line'])
+        query2 = MultiMatch(query=r_location,  fields=['location'])
+        query3 = MultiMatch(query=r_skill, fields=['skill'])
+        s = ProfileDocument.search().query(query1 | query2 | query3)
+        total = s.count()
+        s= s[0:total]
+        profiles =  s.execute()
+        profile_id = [profile.id for profile in profiles]
+        print(profile_id)
+        applicants = User.objects.filter(profile__in = profile_id)
     else:
         applicants = User.objects.filter(groups__name='Applicant').all()
     paginator = Paginator(applicants, 5)
