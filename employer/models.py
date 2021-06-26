@@ -16,7 +16,7 @@ class Employer(models.Model):
 
 class JobPost(models.Model):
     ID = models.AutoField(primary_key=True, editable = False)
-    Employer =  models.ForeignKey(Employer, on_delete=models.SET_NULL,null= True, blank= True)
+    Employer =  models.ForeignKey(Employer, on_delete=models.CASCADE ,null= True, blank= True)
     job_title = models.TextField(null=True, blank = True)
     company_name =models.CharField(max_length=255, null=True, blank = True)
     job_location = models.CharField(max_length=255, null=True, blank = True)
