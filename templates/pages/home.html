@@ -4,7 +4,9 @@
 <!-- Intro Banner
 ================================================== -->
 
-<div class="intro-banner dark-overlay big-padding">
+<!-- Intro Banner
+================================================== -->
+<div class="intro-banner big-padding">
 	
 	<!-- Transparent Header Spacer -->
 	<div class="transparent-header-spacer"></div>
@@ -21,23 +23,23 @@
 			</div>
 		</div>
 		
-		<!-- Search Bar -->
+<!-- Search Bar -->
 		<div class="row">
 			<div class="col-md-12">
-					<form action = "{% url 'search' %}" class="intro-banner-search-form margin-top-95">
+					<form action = "{% url 'search' %}" class="intro-banner-search-form margin-top-95" >
 						<!-- Search Field -->
-						<div class="intro-search-field with-autocomplete">
-							<label for="autocomplete-input" class="field-title ripple-effect">Where?</label>
+						<div class="intro-search-field ">
+							<label for="autoc-location" class="field-title ripple-effect">Where?</label>
 							<div class="input-with-icon">
-								<input id="autocomplete-input" type="text" placeholder="Online Job">
+								<input id="autoc-location" type="text" placeholder="Remote" name="location" value="{{ request.GET.location }}">
 								<i class="icon-material-outline-location-on"></i>
 							</div>
 						</div>
 
 						<!-- Search Field -->
 						<div class="intro-search-field">
-							<label for ="intro-keywords" class="field-title ripple-effect">What job you want?</label>
-							<input id="intro-keywords" type="text" placeholder="Job Title or Keywords" name = "keyword">
+							<label for ="autoc-job" class="field-title ripple-effect">What job you want?</label>
+							<input id="autoc-job" type="text" placeholder="Job Title or Keywords" name = "keyword" value="{{ request.GET.keyword }}">
 						</div>
 
 						<!-- Button -->
@@ -48,33 +50,11 @@
 			</div>
 		</div>
 
-		<!-- Stats -->
-		<div class="row">
-			<div class="col-md-12">
-				<ul class="intro-stats margin-top-45 hide-under-992px">
-					<li>
-						<strong class="counter">1,586</strong>
-						<span>Jobs Posted</span>
-					</li>
-					<li>
-						<strong class="counter">3,543</strong>
-						<span>Tasks Posted</span>
-					</li>
-					<li>
-						<strong class="counter">1,232</strong>
-						<span>Freelancers</span>
-					</li>
-				</ul>
-			</div>
-		</div>
-
 	</div>
 	
 	<!-- Video Container -->
-	<div class="video-container" data-background-image="images/home-video-background-poster.jpg">
-		<video loop autoplay muted>
-			<source src="images/home-video-background.mp4" type="video/mp4">
-		</video>
+	<div class="video-container" style="background-image: url('{% static "images/JobSlide.jpg"%}');">
+
 	</div>
 
 </div>
@@ -86,7 +66,52 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-xl-12">
+				{% include 'includes/messages.html' %}
+				{%if user.is_authenticated %}
+				<!-- Section Headline -->
+				<div class="section-headline margin-top-0 margin-bottom-35">
+					<h3>Jobs Recommended by your skills</h3>
+					<a href="jobs-list-layout-full-page-map.html" class="headline-link">Browse All Jobs</a>
+				</div>
 				
+				<!-- Jobs Container -->
+				<div class="listings-container compact-list-layout margin-top-35">
+					{% for job in jobs %}
+					<!-- Job Listing -->
+					<a href="{% url 'job_detail' job.ID %}" class="job-listing with-apply-button">
+
+						<!-- Job Listing Details -->
+						<div class="job-listing-details">
+
+							{% comment %} <!-- Logo -->
+							<div class="job-listing-company-logo">
+								<img src="{% static 'images/company-logo-01.png'%}" alt="">
+							</div> {% endcomment %}
+
+							<!-- Details -->
+							<div class="job-listing-description">
+								<h3 class="job-listing-title">{{ job.job_title }}</h3>
+
+								<!-- Job Listing Footer -->
+								<div class="job-listing-footer">
+									<ul>
+										<li><i class="icon-material-outline-business"></i> {{ job.company_name }} <div data-tippy-placement="top"></div></li>
+										<li><i class="icon-material-outline-location-on"></i> {{ job.job_location }}</li>
+										<li><i class="icon-material-outline-business-center"></i> {{ job.job_type }}</li>
+										<li><i class="icon-material-outline-access-time"></i> {{ job.job_time }}</li> 
+									</ul>
+								</div>
+							</div>
+
+							<!-- Apply Button -->
+							<span class="list-apply-button ripple-effect">Apply Now</span>
+						</div>
+					</a>	
+					{% endfor %}
+				</div>
+				<!-- Jobs Container / End -->
+				{% else %}
+
 				<!-- Section Headline -->
 				<div class="section-headline margin-top-0 margin-bottom-35">
 					<h3>Recent Jobs</h3>
@@ -102,10 +127,10 @@
 						<!-- Job Listing Details -->
 						<div class="job-listing-details">
 
-							<!-- Logo -->
+							{% comment %} <!-- Logo -->
 							<div class="job-listing-company-logo">
-								<img src="% static 'images/company-logo-01.png'%" alt="">
-							</div>
+								<img src="{% static 'images/company-logo-01.png'%}" alt="">
+							</div> {% endcomment %}
 
 							<!-- Details -->
 							<div class="job-listing-description">
@@ -114,7 +139,7 @@
 								<!-- Job Listing Footer -->
 								<div class="job-listing-footer">
 									<ul>
-										<li><i class="icon-material-outline-business"></i> {{ job.company_name }} <div class="verified-badge" title="Verified Employer" data-tippy-placement="top"></div></li>
+										<li><i class="icon-material-outline-business"></i> {{ job.company_name }} <div data-tippy-placement="top"></div></li>
 										<li><i class="icon-material-outline-location-on"></i> {{ job.job_location }}</li>
 										<li><i class="icon-material-outline-business-center"></i> {{ job.job_type }}</li>
 										<li><i class="icon-material-outline-access-time"></i> {{ job.job_time }}</li> 
@@ -130,6 +155,8 @@
 				</div>
 				<!-- Jobs Container / End -->
 
+				{% endif%}
+
 			</div>
 		</div>
 	</div>
@@ -138,7 +165,7 @@
 
 
 <!-- Photo Section -->
-<div class="photo-section" data-background-image="images/section-background.jpg">
+<div class="photo-section" style="background-image: url('{% static "images/images.png"%}');">
 
 	<!-- Infobox -->
 	<div class="text-content white-font">
@@ -161,7 +188,7 @@
 <!-- Photo Section / End -->
 
 
-<!-- Recent Blog Posts -->
+{% comment %} <!-- Recent Blog Posts -->
 <div class="section padding-top-65 padding-bottom-50">
 	<div class="container">
 		<div class="row">
@@ -275,9 +302,7 @@
 			</div>
 		</div>
 	</div>
-</div>
+</div> {% endcomment %}
 
-
-
-
+{% include 'includes/footer.html' %}
 {%endblock%}

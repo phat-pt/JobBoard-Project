@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<!-- Spacer / End-->
+<!-- Dashboard Container -->
+<div class="dashboard-container">
+  	<!-- Dashboard Sidebar
+	================================================== -->
+	<div class="dashboard-sidebar">
+		<div class="dashboard-sidebar-inner" data-simplebar>
+			<div class="dashboard-nav-container">
+
+				<!-- Responsive Navigation Trigger -->
+				<a href="#" class="dashboard-responsive-nav-trigger">
+					<span class="hamburger hamburger--collapse" >
+						<span class="hamburger-box">
+							<span class="hamburger-inner"></span>
+						</span>
+					</span>
+					<span class="trigger-title">Dashboard Navigation</span>
+				</a>
+				
+				<!-- Navigation -->
+				<div class="dashboard-nav">
+					<div class="dashboard-nav-inner">
+
+						<ul data-submenu-title="Organize and Manage">
+							<li><a href="{% url 'dashboard' %}"><i class="icon-material-outline-dashboard"></i> Dashboard</a></li>
+							<li class ="active"><a href="{% url 'job_list' %}"><i class="icon-material-outline-business-center"></i> Manage Jobs </a></li>
+							<li><a href="{% url 'applicant_list' %}"><i class="icon-material-outline-person-pin"></i> Search Applicant</a></li>
+							<li><a href="{% url 'employer_profile' %}"><i class="icon-material-outline-account-circle"></i>Employers Profile</a></li>
+						</ul>
+					</div>
+				</div>
+				<!-- Navigation / End -->
+
+			</div>
+		</div>
+	</div>
+	<!-- Dashboard Sidebar / End -->
+
+		<!-- Dashboard Content
+	================================================== -->
+	<div class="dashboard-content-container" data-simplebar>
+		<div class="dashboard-content-inner" >
+			
+			<!-- Dashboard Headline -->
+			<div class="dashboard-headline">
+				<h3>Manage Jobs</h3>
+
+				<!-- Breadcrumbs -->
+				<nav id="breadcrumbs" class="dark">
+					<ul>
+						<li><a href="#">Home</a></li>
+						<li><a href="#">Dashboard</a></li>
+						<li>Manage Jobs</li>
+					</ul>
+				</nav>
+			</div>
+	
+			<!-- Row -->
+			<div class="row">
+			
+				<!-- Dashboard Box -->
+				<div class="col-xl-12">
+				<div> <a href="{% url 'post_job' %}" class="button ripple-effect button-sliding-icon" style="width: 150px;">Post a Jobs <i class="icon-feather-arrow-right"></i></a> {% include 'includes/messages.html' %} </div>
+				<form action = "{% url 'search_job' %}" method="get" class="submit-field">
+					<h5>Search <i class="help-icon" data-tippy-placement="right" data-tippy="" data-original-title="Up to 5 skills that best describe your project"></i></h5>
+					<div class="keywords-container">
+						<div class="keyword-input-container">
+							<input value="{{ request.GET.keyword }}" name = "keyword" type="text" class="keyword-input with-border" placeholder="Search your job posted">
+							<button type = "submit" class="keyword-input-button ripple-effect"><i class="icon-material-outline-search"></i></button>
+						</div>
+						<div class="keywords-list" style="height: auto;"><!-- keywords go here --></div>
+						<div class="clearfix"></div>
+					</div>
+
+				</form>
+					<div class="dashboard-box margin-top-0">
+					
+						<!-- Headline -->
+						<div class="headline">
+							<h3><i class="icon-material-outline-business-center"></i> My Job Listings</h3>
+						</div>
+
+						<div class="content">
+							<ul class="dashboard-box-list">
+
+							{% for job in jobs %}
+								<li>
+									<!-- Job Listing -->
+									<div class="job-listing">
+
+										<!-- Job Listing Details -->
+										<div class="job-listing-details">
+
+											<!-- Details -->
+											<div class="job-listing-description">
+												<h3 class="job-listing-title"><a href="{% url 'job_detail' job.ID %}">{{job.job_title}}</a></h3>
+
+												<!-- Job Listing Footer -->
+												<div class="job-listing-footer">
+													<ul>
+														<li><i class="icon-material-outline-date-range"></i> Post on: {{job.job_time}} </li>
+													</ul>
+												</div>
+												<p class="job-listing-text">{{job.job_summary | safe}} </p>
+											</div>
+
+										</div>
+									</div>
+
+									<!-- Buttons -->
+									<div class="buttons-to-right always-visible">
+										<a href="{% url 'edit_job' job.ID %}" class="button ripple-effect"><i class="icon-material-outline-supervisor-account"></i> Edit </a>
+										{% comment %} <a href="#" class="button gray ripple-effect ico" title="Edit" data-tippy-placement="top"><i class="icon-feather-edit"></i></a> {% endcomment %}
+										<a href="{% url 'delete_job' job.ID %}" class="button dark ripple-effect"><i class="icon-material-outline-supervisor-account"></i> Delete </a>
+									</div>
+								</li>
+							{% endfor %}
+							</ul>
+							
+						</div>
+				</div>
+							<!-- Pagination -->
+							<div class="pagination-container margin-top-60 margin-bottom-60">
+							{% if jobs.has_other_pages %}
+								<nav class="pagination">
+									<ul>
+										{% if jobs.has_previous %}
+									<li class="pagination-arrow">
+									<a href="?page={{jobs.previous_page_number}}
+										{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}
+										{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}
+										{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}">
+										<i class="icon-material-outline-keyboard-arrow-left"></i>
+									</a>
+									</li>
+							{% else %}
+									<li class="pagination-arrow" disabled ><a href="#"><i class="icon-material-outline-keyboard-arrow-left"></i></a></li>
+							{% endif %}
+
+									{% for i in jobs.paginator.page_range %}
+								{% if jobs.number == i%}
+									<li><a class="current-page"> {{i}}</a></li>
+									<li><a class="pagination-arrow"> of</a></li>
+									<li><a class="current-page">{{ jobs.paginator.num_pages }}</a></li>
+								{% comment %} {%else%}
+									<li>
+									{<a href="?page={{i}}
+									{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}
+									{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}
+									{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}">{{i}}</a></li> {% endcomment %}
+								{%endif %} 
+							{%endfor%}
+
+									
+							{% if jobs.has_next %}
+									<li class="pagination-arrow"><a href="?page={{ jobs.next_page_number }}
+									{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}
+									{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}
+									{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}">
+									<i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
+							{% else %}
+									<li class="pagination-arrow" disabled ><a href="#"><i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
+							{% endif %}
+
+								</ul>
+							</nav>
+						{% endif %} 
+							</div>
+				</div>
+			</div>
+			<!-- Row / End -->
+
+			<!-- Footer -->
+			<div class="dashboard-footer-spacer"></div>
+			<div class="small-footer margin-top-15">
+				<div class="small-footer-copyrights">
+					© 2018 <strong>Hireo</strong>. All Rights Reserved.
+				</div>
+				<ul class="footer-social-links">
+					<li>
+						<a href="#" title="Facebook" data-tippy-placement="top">
+							<i class="icon-brand-facebook-f"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#" title="Twitter" data-tippy-placement="top">
+							<i class="icon-brand-twitter"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#" title="Google Plus" data-tippy-placement="top">
+							<i class="icon-brand-google-plus-g"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#" title="LinkedIn" data-tippy-placement="top">
+							<i class="icon-brand-linkedin-in"></i>
+						</a>
+					</li>
+				</ul>
+				<div class="clearfix"></div>
+			</div>
+			<!-- Footer / End -->
+
+		</div>
+	</div>
+	<!-- Dashboard Content / End -->
+</div>
+{% endblock %}

@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<!-- Spacer / End-->
+<!-- Dashboard Container -->
+<div class="dashboard-container">
+	<!-- Dashboard Sidebar
+	================================================== -->
+	<div class="dashboard-sidebar">
+		<div class="dashboard-sidebar-inner" data-simplebar>
+			<div class="dashboard-nav-container">
+
+				<!-- Responsive Navigation Trigger -->
+				<a href="#" class="dashboard-responsive-nav-trigger">
+					<span class="hamburger hamburger--collapse" >
+						<span class="hamburger-box">
+							<span class="hamburger-inner"></span>
+						</span>
+					</span>
+					<span class="trigger-title">Dashboard Navigation</span>
+				</a>
+				
+				<!-- Navigation -->
+				<div class="dashboard-nav">
+					<div class="dashboard-nav-inner">
+
+						<ul data-submenu-title="Organize and Manage">
+							<li><a href="{% url 'dashboard' %}"><i class="icon-material-outline-dashboard"></i> Dashboard</a></li>
+							<li><a href="{% url 'job_list' %}"><i class="icon-material-outline-business-center"></i> Manage Jobs </a></li>
+							<li class="active"><a href="{% url 'applicant_list' %}"><i class="icon-material-outline-person-pin"></i> Search Applicant</a></li>
+							<li><a href="{% url 'employer_profile' %}"><i class="icon-material-outline-account-circle"></i>Employers Profile</a></li>
+						</ul>
+					</div>
+				</div>
+				<!-- Navigation / End -->
+
+			</div>
+		</div>
+	</div>
+	<!-- Dashboard Sidebar / End -->
+
+
+	<!-- Dashboard Content
+	================================================== -->
+	<div class="dashboard-content-container" data-simplebar>
+		<div class="dashboard-content-inner" >
+			
+			<!-- Dashboard Headline -->
+			<div class="dashboard-headline">
+				<h3>Search Applicants</h3>
+
+				<!-- Breadcrumbs -->
+				<nav id="breadcrumbs" class="dark">
+					<ul>
+						<li><a href="#">Home</a></li>
+						<li><a href="#">Dashboard</a></li>
+						<li>Manage Candidates</li>
+					</ul>
+				</nav>
+			</div>
+	
+			<!-- Row -->
+			<div class="row">
+
+				<!-- Dashboard Box -->
+				<div class="col-xl-12">
+                	<form action = "{% url 'applicant_search' %}" method="get" class="submit-field">
+					<h5>Search <i class="help-icon" data-tippy-placement="right" data-tippy="" data-original-title="Up to 5 skills that best describe your project"></i></h5>
+					    <div class="keywords-container">
+						<div class="keyword-input-container">
+                            <div class= "row">
+                                <div class="col-xl-8">
+                                    <input value="{{ request.GET.keyword }}" name = "keyword" type="text" class="keyword-input with-border" placeholder="TagLine">
+                                </div>
+                                <div class="col-xl-4">
+                                    <input value="{{ request.GET.location }}" name = "location" type="text" class="keyword-input with-border" placeholder="Location">
+                                </div>
+                                <div class="col-xl-8">
+                                    <input id="skills" value="{{ request.GET.skill }}" name = "skill" type="text" class="keyword-input with-border" placeholder="Skills">
+                                </div>
+                                <div class="col-xl-2">
+                                    <button type = "submit" class="button ripple-effect"> Search </button>
+                                </div>
+                            </div>
+						</div>
+						<div class="keywords-list" style="height: auto;"><!-- keywords go here --></div>
+						<div class="clearfix"></div>
+					</div>
+
+				</form>
+					<div class="dashboard-box margin-top-0">
+
+						<!-- Headline -->
+						<div class="headline">
+							<h3><i class="icon-material-outline-supervisor-account"></i>Applicants</h3>
+						</div>
+
+						<div class="content">
+							<ul class="dashboard-box-list">
+                            {%for applicant in applicants%}
+								<li>
+									<!-- Overview -->
+									<div class="freelancer-overview manage-candidates">
+										<div class="freelancer-overview-inner">
+
+
+											<!-- Name -->
+											<div class="freelancer-name">
+												<h4><a target="_blank" href="{% url 'applicant_detail' applicant.id %}">{{applicant.first_name}} {{applicant.last_name}} </a></h4>
+
+												<!-- Details -->
+												<span class="freelancer-detail-item"><a href="#"><i class="icon-feather-mail"></i> {{applicant.email}}</a></span>
+                                                <div> <span class="freelancer-detail-item"><i class="icon-material-outline-location-on"></i> {{applicant.profile.location}}</span> </div>
+												<div> <span class="freelancer-detail-item">Tag Line: {{applicant.profile.tag_line}}</i> </span></div>
+                                                <div> <span class="freelancer-detail-item">Skill: {{applicant.profile.skill}}</i> </span></div>
+
+												<!-- Buttons -->
+												<div class="buttons-to-right always-visible margin-top-25 margin-bottom-5">
+													<a href="{{ applicant.profile.CV.url }}" class="button ripple-effect"><i class="icon-feather-file-text"></i> Watch/Download CV</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</li>
+                            {%endfor%}
+							</ul>
+						</div>
+													<!-- Pagination -->
+							<div class="pagination-container margin-top-60 margin-bottom-60">
+							{% if applicants.has_other_pages %}
+								<nav class="pagination">
+									<ul>
+										{% if applicants.has_previous %}
+									<li class="pagination-arrow">
+									<a href="?page={{applicants.previous_page_number}}
+										{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}
+										{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}
+										{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}">
+										<i class="icon-material-outline-keyboard-arrow-left"></i>
+									</a>
+									</li>
+							{% else %}
+									<li class="pagination-arrow" disabled ><a href="#"><i class="icon-material-outline-keyboard-arrow-left"></i></a></li>
+							{% endif %}
+
+									{% for i in applicants.paginator.page_range %}
+								{% if applicants.number == i%}
+									<li><a class="current-page"> {{i}}</a></li>
+									<li><a class="pagination-arrow"> of</a></li>
+									<li><a class="current-page">{{ applicants.paginator.num_pages }}</a></li>
+								{% comment %} {%else%}
+									<li>
+									{<a href="?page={{i}}
+									{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}
+									{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}
+									{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}">{{i}}</a></li> {% endcomment %}
+								{%endif %} 
+							{%endfor%}
+
+									
+							{% if applicants.has_next %}
+									<li class="pagination-arrow"><a href="?page={{ applicants.next_page_number }}
+									{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}
+									{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}
+									{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}">
+									<i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
+							{% else %}
+									<li class="pagination-arrow" disabled ><a href="#"><i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
+							{% endif %}
+
+								</ul>
+							</nav>
+						{% endif %} 
+							</div>
+					</div>
+					
+				</div>
+				
+			</div>
+			<!-- Row / End -->
+
+			<!-- Footer -->
+			<div class="dashboard-footer-spacer"></div>
+			<div class="small-footer margin-top-15">
+				<div class="small-footer-copyrights">
+					© 2018 <strong>Hireo</strong>. All Rights Reserved.
+				</div>
+				<ul class="footer-social-links">
+					<li>
+						<a href="#" title="Facebook" data-tippy-placement="top">
+							<i class="icon-brand-facebook-f"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#" title="Twitter" data-tippy-placement="top">
+							<i class="icon-brand-twitter"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#" title="Google Plus" data-tippy-placement="top">
+							<i class="icon-brand-google-plus-g"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#" title="LinkedIn" data-tippy-placement="top">
+							<i class="icon-brand-linkedin-in"></i>
+						</a>
+					</li>
+				</ul>
+				<div class="clearfix"></div>
+			</div>
+			<!-- Footer / End -->
+
+		</div>
+	</div>
+	<!-- Dashboard Content / End -->
+{% endblock %}

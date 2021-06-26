@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% block content%}
+{%load static%}
+<!-- Spacer -->
+<div class="margin-top-90"></div>
+<!-- Spacer / End-->
+
+<!-- Page Content
+================================================== -->
+<div class="container">
+	<div class="row">
+		<form action = "{% url 'search' %}" class="col-xl-3 col-lg-4" method="get" enctype="multipart/form-data">
+			<div class="sidebar-container">
+				
+				<!-- Location -->
+				<div class="sidebar-widget">
+					<h3>Location</h3>
+					<div class="keywords-container">
+						<div class="keyword-input-container">
+							<input id = "autoc-location" type="text" class="keyword-input" placeholder="e.g. location" name="location" value="{{ request.GET.location }}"/>
+						</div>
+						<div class="keywords-list"><!-- keywords go here --></div>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+
+				
+				<!-- Keywords -->
+				<div class="sidebar-widget">
+					<h3>Keywords</h3>
+					<div class="keywords-container">
+						<div class="keyword-input-container">
+							<input id = "autoc-job" type="text" class="keyword-input" placeholder="e.g. job title" name="keyword" value="{{ request.GET.keyword }}"/>
+						</div>
+						<div class="keywords-list"><!-- keywords go here --></div>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+				
+				<div class="sidebar-widget">
+					<h3>Salary</h3>
+
+								<div class="input-with-icon">
+									<input class="with-border" type="text" name = "min" placeholder="Min" value = "{{ request.GET.min }}">
+									<i class="currency">USD</i>
+								</div>
+								&nbsp;
+								<div class="input-with-icon">
+									<input class="with-border" type="text" name = "max" placeholder="Max" value = "{{ request.GET.max }}">
+									<i class="currency">USD</i>
+								</div>
+				</div>
+
+
+				<div class="sidebar-widget">
+					<h3>Job Types</h3>
+					<select name = "jobtype" class="selectpicker default"  data-size="5" >
+						<option value = "" {% if request.GET.jobtype == '' %}selected{% endif %}>All</option>
+						<option value = "full-time" {% if request.GET.jobtype == 'full-time' %}selected{% endif %}>Full-time</option>
+						<option value = "part-time" {% if request.GET.jobtype == 'part-time' %}selected{% endif %}>Part-time</option>
+						<option value = "intership" {% if request.GET.jobtype == 'intership' %}selected{% endif %}>Internship</option>
+						<option value = "temporary" {% if request.GET.jobtype == 'temporary' %}selected{% endif %}>Temporary</option>
+						<option value = "contract" {% if request.GET.jobtype == 'contract' %}selected{% endif %}>Contract</option>
+					</select>
+				</div>
+
+				<button class="button ripple-effect" type='submit'>Search</button>
+
+			</div>
+		
+		</form>
+		<div action = "{% url 'search' %}" class="col-xl-9 col-lg-8 content-left-offset">
+
+			<h3 class="page-title">Search Result - {{total}} found</h3>
+
+			<div class="notify-box margin-top-15">
+				{% comment %} <div class="switch-container">
+					<label class="switch"><input type="checkbox"><span class="switch-button"></span><span class="switch-text">Turn on email alerts for this search</span></label>
+				</div> {% endcomment %}
+
+				{% comment %} <div class="sort-by">
+					<span>Sort by:</span>
+					 <select class="selectpicker hide-tick" onchange="{% url 'sort' %}">
+						<option  value = "1">Relevance</option>
+						<option  value = "2">Date</option>
+					</select> 
+					<button> Relevance </button>
+					<button> Date </button>
+				</div> {% endcomment %}
+				<div class="sort-by">
+					<span>Sort by:</span> &nbsp;
+					{% if request.GET.sort%}
+					<a href="search?{% if request.GET.location %}location={{ request.GET.location }}{% endif %}
+							{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}
+							{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}"
+							 name = "relevance">Relevance</a></span>
+					&nbsp; - &nbsp;
+					<a>Date</a></span>
+					{%else%}
+					<a>Relevance</a></span>
+					&nbsp; - &nbsp;
+					<a href="search?{% if request.GET.location %}location={{ request.GET.location }}{% endif %}
+							{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}
+							{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}&sort=date" name = "date">Date</a></span>
+					{%endif%}
+				</div>
+			</div>
+
+			<div class="listings-container margin-top-35">
+				{% for job in jobs %}
+				<!-- Job Listing -->
+				<a href="{% url 'job_detail' job.ID %}" class="job-listing">
+					<!-- Job Listing Details -->
+					<div class="job-listing-details">
+						<!-- Logo -->
+						{% comment %} <div class="job-listing-company-logo">
+							<img src="{% static 'images/company-logo-01.png'%}" alt="">
+						</div> {% endcomment %}
+
+						<!-- Details -->
+						<div class="job-listing-description">
+							<h4 class="job-listing-company"> <i class="icon-material-outline-business"></i> {{job.company_name}} <span data-tippy-placement="top"></span></h4>
+							<h3 class="job-listing-title">{{job.job_title}}</h3>
+							<p class="job-listing-text">{{job.job_summary | safe}} </p>
+						</div>
+
+					</div>
+
+					<!-- Job Listing Footer -->
+					<div class="job-listing-footer">
+						<ul>
+							<li><i class="icon-material-outline-location-on"></i> {{job.job_location}}</li>
+							<li><i class="icon-material-outline-business-center"></i> {{job.job_type}}</li>
+							<li><i class="icon-material-outline-account-balance-wallet"></i> {{job.job_salary}}</li>
+							<li><i class="icon-material-outline-access-time"></i>  {{job.job_time}} </li>
+						</ul>
+					</div>
+				</a>		
+
+				<!-- Job Listing -->
+				{% endfor %}
+
+				<!-- Pagination -->
+				<div class="clearfix"></div>
+				<div class="row">
+					<div class="col-md-12">
+						<!-- Pagination -->
+						<div class="pagination-container margin-top-30 margin-bottom-60">
+						{% if jobs.has_other_pages %}
+							<nav class="pagination">
+								<ul>
+							{% if jobs.has_previous %}
+									<li class="pagination-arrow">
+									<a href="?page={{jobs.previous_page_number}}
+										{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}
+										{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}
+										{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}
+										{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">
+										<i class="icon-material-outline-keyboard-arrow-left"></i>
+									</a>
+									</li>
+							{% else %}
+									<li class="pagination-arrow" disabled ><a href="#"><i class="icon-material-outline-keyboard-arrow-left"></i></a></li>
+							{% endif %}
+
+							{% for i in jobs.paginator.page_range %}
+								{% if jobs.number == i%}
+									<li><a class="current-page"> {{i}}</a></li>
+									<li><a class="pagination-arrow"> of</a></li>
+									<li><a class="current-page">{{ jobs.paginator.num_pages }}</a></li>
+								{% comment %} {%else%}
+									<li>
+									{<a href="?page={{i}}
+									{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}
+									{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}
+									{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}">{{i}}</a></li> {% endcomment %}
+								{%endif %} 
+							{%endfor%}
+
+							{% if jobs.has_next %}
+									<li class="pagination-arrow"><a href="?page={{ jobs.next_page_number }}
+									{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}
+									{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}
+									{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}
+									{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}">
+									<i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
+							{% else %}
+									<li class="pagination-arrow" disabled ><a href="#"><i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
+							{% endif %}
+
+								</ul>
+							</nav>
+						{% endif %} 
+						</div>
+					</div>
+				</div>
+				<!-- Pagination / End -->
+
+			</div>
+
+		</div>
+	</div>
+</div>
+{% include 'includes/footer.html' %}
+{% endblock %}

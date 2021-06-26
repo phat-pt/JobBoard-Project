@@ -27,6 +27,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_REDIRECT_URL = 'home'
+
+#User
+# AUTH_USER_MODEL = 'pages.Applicant'
 
 # Application definition
 
@@ -37,9 +41,38 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_cleanup.apps.CleanupConfig',
     'pages.apps.PagesConfig',
-    'ckeditor'
+    'applicant.apps.ApplicantConfig',
+    'employer.apps.EmployerConfig',
+    'django_summernote',
+    'django_elasticsearch_dsl',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    #Providers
+    'allauth.socialaccount.providers.google',
 ]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+ELASTICSEARCH_DSL={
+    'default': {
+        'hosts': 'localhost:9200'
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -130,3 +163,29 @@ STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_DIRS = [
     BASE_DIR / "jobsearch/static",
 ]
+
+
+#Media Files
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT =  BASE_DIR / 'media' 
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+SUMMERNOTE_THEME = 'bs4'    # Use Bootstrap4 theme
+
+#Messages
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.ERROR : 'error',
+}
+
+SITE_ID = 2
+
+#Email Stuff
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'loopache@gmail.com'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'loopache@gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_PASSWORD = '025908560@Bc'

@@ -5,42 +5,51 @@
 
 <!-- Basic Page Needs
 ================================================== -->
-<title>Hireo</title>
+<title>Job Search</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 <!-- CSS
 ================================================== -->
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
-<link rel="stylesheet" href= "{% static 'css/colors/blue.css' %}">
 
+
+
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href= "{% static 'css/colors/blue.css' %}">
 </head>
 <body>
 
-<!-- Wrapper -->
-<div id="wrapper" class="wrapper-with-transparent-header">
-
+<div class="margin-top-80"></div>
 {% include 'includes/header.html' %}
+
 <div class="clearfix"></div>
 <!-- Header Container / End -->
 
-<!-- Spacer -->
-<div class="margin-top-90"></div>
-<!-- Spacer / End-->
+
 {% block content %} 
 
 
 
 
 {% endblock %}
-{% include 'includes/footer.html' %}
+
 </div>
 <!-- Wrapper / End -->
 
 <!-- Scripts
 ================================================== -->
-<script src="{% static 'js/jquery-3.3.1.min.js'%}"></script>
-<script src="{% static 'js/jquery-migrate-3.0.0.min.js'%}"></script>
+
+
+
+
+
+<script src="{% static 'js/custom.js'%}"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{% comment %} <script src="{% static 'js/jquery-3.3.1.min.js'%}"></script>
+<script src="{% static 'js/jquery-migrate-3.0.0.min.js'%}"></script> {% endcomment %}
 <script src="{% static 'js/mmenu.min.js'%}"></script>
 <script src="{% static 'js/tippy.all.min.js'%}"></script>
 <script src="{% static 'js/simplebar.min.js'%}"></script>
@@ -51,26 +60,82 @@
 <script src="{% static 'js/counterup.min.js'%}"></script>
 <script src="{% static 'js/magnific-popup.min.js'%}"></script>
 <script src="{% static 'js/slick.min.js'%}"></script>
-<script src="{% static 'js/custom.js"'%}"></script>
+<script src="{% static 'ckeditor/ckeditor.js' %}"></script>
 
-<!-- Snackbar // documentation: https://www.polonel.com/snackbar/ -->
+
 <script>
-// Snackbar for user status switcher
-$('#snackbar-user-status label').click(function() { 
-	Snackbar.show({
-		text: 'Your status has been changed!',
-		pos: 'bottom-center',
-		showAction: false,
-		actionText: "Dismiss",
-		duration: 3000,
-		textColor: '#fff',
-		backgroundColor: '#383838'
-	}); 
-}); 
+  $( function() {
+		$( "#autoc-job" ).autocomplete({
+		source: '{% url 'home' %}'
+		});
+		$( "#autoc-location" ).autocomplete({
+		source: '{% url 'home' %}'
+		});
+		
+  	});
 </script>
 
+  <script>
+  $( function() {
+    var availableTags = [ "Google Cloud", "AWS", "Azure", "AI", "Spark", "R", "Hadoop",
+     "ActionScript", "AppleScript", "Asp", "BASIC", "C", "C++", "Clojure", "COBOL", "ColdFusion",
+      "Golang", "Fortran", "Groovy", "Haskell", "Java", "JavaScript", "Lisp", "Perl", "Java",
+       "PHP", "Python", "Ruby", "Scala", "Scheme", "Data Warehouse", "Data Warehousing", "Power BI","MQTT", "Analytics",
+       "Machine Learning","Deep Learning", "SQL", "MySQL", "SQL Server","Oracle","SAP","ERP","CRM","Data Pipelines","Angular","Laravel"];
+    function split( val ) {
+      return val.split( /,\s*/ );
+    }
+    function extractLast( term ) {
+      return split( term ).pop();
+    }
+ 
+    $( "#skills" )
+      // don't navigate away from the field on tab when selecting an item
+      .on( "keydown", function( event ) {
+        if ( event.keyCode === $.ui.keyCode.TAB &&
+            $( this ).autocomplete( "instance" ).menu.active ) {
+          event.preventDefault();
+        }
+      })
+      .autocomplete({
+        minLength: 0,
+        source: function( request, response ) {
+          // delegate back to autocomplete, but extract the last term
+          response( $.ui.autocomplete.filter(
+            availableTags, extractLast( request.term ) ) );
+        },
+        focus: function() {
+          // prevent value inserted on focus
+          return false;
+        },
+        select: function( event, ui ) {
+          var terms = split( this.value );
+          // remove the current input
+          terms.pop();
+          // add the selected item
+          terms.push( ui.item.value );
+          // add placeholder to get the comma-and-space at the end
+          terms.push( "" );
+          this.value = terms.join( ", " );
+          return false;
+        }
+      });
+  } );
+  </script>
 
-<!-- Google Autocomplete -->
+  <script>
+  $('#file-upload').change(function() {
+    var i = $(this).prev('label').clone();
+    var file = $('#file-upload')[0].files[0].name;
+    $(this).prev('label').text(file);
+  });
+</script>
+{% comment %} <!-- Google Autocomplete -->
+    var availableTags = [
+        {% for job in autoc_jobs %}
+            "{{job.job_title}}",
+        {% endfor %}
+    ];
 <script>
 	function initAutocomplete() {
 		 var options = {
@@ -88,8 +153,8 @@ $('#snackbar-user-status label').click(function() {
 	        $(".pac-container").prependTo(".intro-search-field.with-autocomplete");
 	    }, 300);
 	}
+</script> {% endcomment %}
 
-</script>
 
 <!-- Google API -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgeuuDfRlweIs7D6uo4wdIHVvJ0LonQ6g&libraries=places&callback=initAutocomplete"></script>

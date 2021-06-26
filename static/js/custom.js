@@ -42,7 +42,7 @@ $(document).ready(function(){
 		$(window).resize(function() { mmenuInit(); });
 	});
 
-
+	
 	/*--------------------------------------------------*/
 	/*  Sticky Header
 	/*--------------------------------------------------*/
@@ -115,6 +115,13 @@ $(document).ready(function(){
 		$('body').append('<div id="backtotop"><a href="#"></a></div>');
 	}
 	backToTop();
+
+	//setTimeoutMessage
+	function setTimeout() {
+		setTimeout(function(){ $('message').fadeOut('slow'); }, 3000);
+	}
+	setTimeout();
+
 
 	// Showing Button
 	var pxShow = 600; // height on which the button will show
@@ -1293,10 +1300,12 @@ $(document).ready(function(){
 		 fixedContentPos: false
 	});
 
-
-
+	$(document).ready(function () {
+		$(".summernote").summernote();
+	});
 // ------------------ End Document ------------------ //
 });
 
 })(this.jQuery);
+
 

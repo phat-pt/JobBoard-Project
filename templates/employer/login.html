@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block content%}
+{%load static%}
+{% load socialaccount %}
+{% providers_media_js %}
+<!-- Titlebar
+================================================== -->
+<div id="titlebar" class="gradient">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+
+				<h2>Log In Employer</h2>
+
+				<!-- Breadcrumbs -->
+				<nav id="breadcrumbs" class="dark">
+					<ul>
+						<li><a href="/">Home</a></li>
+						<li>Log In Employer</li>
+					</ul>
+				</nav>
+
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Page Content
+================================================== -->
+<div class="container">
+	<div class="row">
+		<div class="col-xl-5 offset-xl-3">
+
+
+			<div class="login-register-page">
+				<!-- Welcome Text -->
+				<div class="welcome-text">
+					<h3>We're glad to see you again!</h3>
+					<span>Don't have an employer account? <a href="{% url 'employer_register' %}">Sign Up!</a></span>
+				</div>
+			 	{% include 'includes/messages.html' %}
+				<!-- Form -->
+				<form action = "{% url 'employer_login' %}" method="post" id="login-form"  >
+					{% csrf_token %}
+					<div class="input-with-icon-left">
+						<i class="icon-material-baseline-mail-outline"></i>
+						<input type="text" class="input-text with-border" name="username" placeholder="Username" required/>
+					</div>
+
+					<div class="input-with-icon-left">
+						<i class="icon-material-outline-lock"></i>
+						<input type="password" class="input-text with-border" name="password" placeholder="Password" required/>
+					</div>
+					<a href="{% url 'employer_forgot_password' %}" class="forgot-password">Forgot Password?</a>
+				</form>
+				
+				<!-- Button -->
+				{% comment %}   {% endcomment %}
+				
+				<!-- Social Login -->
+				 
+				<div class="social-login-buttons">
+					<button class="facebook-login ripple-effect" type="submit" form="login-form">Log In <i class="icon-material-outline-arrow-right-alt"></i> </button>
+				</div>  
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<!-- Spacer -->
+<div class="margin-top-70"></div>
+<!-- Spacer / End-->
+
+{% include 'includes/footer.html' %}
+{%endblock%}

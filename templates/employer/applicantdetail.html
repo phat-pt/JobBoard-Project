@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<!-- Titlebar
+================================================== -->
+<div class="single-page-header freelancer-header" data-background-image="{% static "images/JobSlide.jpg"%}">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="single-page-header-inner">
+					<div class="left-side">
+						<div class="header-details">
+							<h3>{{applicant.first_name}} {{applicant.last_name}} <span> {{applicant.profile.tag_line}}</span></h3>
+							<ul>
+								<li><i class="icon-material-outline-location-on"></i> 	{{applicant.profile.location}}</li>
+								<li><i class="icon-feather-mail"></i> 	{{applicant.email}}</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Page Content
+================================================== -->
+<div class="container">
+	<div class="row">
+		
+		<!-- Content -->
+		<div class="col-xl-8 col-lg-8 content-right-offset">
+			<!-- Page Content -->
+			<div class="single-page-section">
+				<h3 class="margin-bottom-25">About Me</h3>
+                <p> {{applicant.profile.introduction}}</p>
+			</div>
+
+            <embed src="{{applicant.profile.CV.url}}" type="application/pdf" width="100%" height="1150px"/>
+		</div>
+		
+
+		<!-- Sidebar -->
+		<div class="col-xl-4 col-lg-4">
+			<div class="sidebar-container">
+
+	
+				<!-- Widget -->
+				<div class="sidebar-widget">
+					<h3>Skills</h3>
+					<div class="task-tags">
+                    {% for skill in skills%}
+                        {% if skill != ""%}
+						    <span>{{skill}}</span>
+                        {% endif%}
+                    {% endfor %}
+					</div>
+				</div>
+
+	<!-- Sidebar Widget -->
+				<div class="sidebar-widget">
+					<h3>Bookmark or Share</h3>
+                    <form id="bookmark" method='post' >
+                    {% csrf_token %}
+                        {% if bookmark.is_active == True %}
+                            <!-- Bookmark Button -->
+                            <button value ="True" type='submit' class="bookmark-button margin-bottom-25 bookmarked" id ="bookmark" name = "bookmark">
+                                <span class="bookmark-icon"></span>
+                                <span class="bookmark-text">Bookmark</span>
+                                <span class="bookmarked-text">Bookmarked</span>
+                            </button>
+                        {% else %}
+                            <!-- Bookmark Button -->
+                            <button value ="False" type='submit' class="bookmark-button margin-bottom-25" id ="bookmark" name = "bookmark">
+                                <span class="bookmark-icon"></span>
+                                <span class="bookmark-text">Bookmark</span>
+                                <span class="bookmarked-text">Bookmarked</span>
+                            </button>
+                        {% endif %}
+                    </form>
+				</div>
+				<!-- Widget -->
+				<div class="sidebar-widget">
+					<div class="job-overview">
+						<div class="job-overview-headline">Applicant Summary</div>
+						<div class="job-overview-inner">
+							<ul>
+								<li>
+									<i class="icon-material-outline-location-on"></i>
+									<span>Location</span>
+									<h5>{{applicant.profile.location}}</h5>
+								</li>
+								<li>
+									<i class="icon-material-outline-business-center"></i>
+									<span>Email</span>
+									<h5>{{applicant.email}}</h5>
+								</li>
+								<li>
+									<i class="icon-material-outline-local-atm"></i>
+									<span>Tag Line</span>
+									<h5>{{ applicant.profile.tag_line }}</h5>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+</div>
+{% include  'includes/footer.html'%}
+
+{% endblock %}

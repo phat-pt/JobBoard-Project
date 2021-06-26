@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<!-- Titlebar
+================================================== -->
+<div class="single-page-header" data-background-image="{% static 'images/single-job.jpg'%}">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="single-page-header-inner">
+					<div class="left-side">
+						<div class="header-image"><a href="single-company-profile.html"><img src="{% static 'images/company-logo-03a.png'%}" alt=""></a></div>
+						<div class="header-details">
+							<h3>{{ single_job.job_title }}</h3>
+							<h5>About the Employer</h5> 
+							<ul>
+								{% if single_job.Employer.id == 1%}
+								<li><i class="icon-material-outline-business"></i> {{single_job.company_name}}</li>
+								{% else%}
+								<li><a href="{% url 'company_detail' single_job.Employer.id %}"><i class="icon-material-outline-business"></i> {{single_job.company_name}}</a></li>
+								{%endif%}
+								<li><div class="star-rating" data-rating="4.9"></div></li>
+								<li><img class="flag" src="images/flags/gb.svg" alt=""> {{single_job.job_location }}</li>
+								<li><div class="verified-badge-with-title">Verified</div></li>
+							</ul>
+						</div>
+					</div>
+					<div class="right-side">
+						<div class="salary-box">
+							<div class="salary-type">Salary</div>
+							<div class="salary-amount">{{single_job.job_salary}}</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+	<div class="col-xl-8 col-lg-8 offset-xl-2 offset-lg-2">
+
+			<section id="contact" class="margin-bottom-60">
+				<h3 class="headline margin-top-15 margin-bottom-35">Fill the cover letter you want to send</h3>
+
+				<form action="{% url 'send_apply_job' single_job.ID %}" method="post" name="apply-form" id="apply-form" autocomplete="on" enctype="multipart/form-data">
+					{% csrf_token %}
+					{%include 'includes/messages.html'%}
+					<div class="row">
+						<div class="col-md-6">
+							<div class="input-with-icon-left">
+								<input value ="{{request.user.first_name}} {{request.user.last_name}}"class="with-border" name="name" type="text" id="name" placeholder="Your Name" required="required">
+								<i class="icon-material-outline-account-circle"></i>
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="input-with-icon-left">
+								<input value ="{{request.user.email}}" class="with-border" name="email" type="email" id="email" placeholder="Email Address" pattern="^[A-Za-z0-9](([_\.\-]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([\.\-]?[a-zA-Z0-9]+)*)\.([A-Za-z]{2,})$" required="required">
+								<i class="icon-material-outline-email"></i>
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="uploadButton">
+								<label class="uploadButton-button ripple-effect" for="file-upload">Upload your CV (PDF) </label>
+									<input name ="CV" class="uploadButton-input" type="file" accept="application/pdf" id="file-upload" multiple="">											
+							</div>
+						</div>
+
+					</div>
+
+					<div>
+						<textarea class="with-border" name="coverletter" cols="40" rows="5" id="comments" placeholder="Cover Letter" spellcheck="true" required="required"></textarea>
+					</div>
+
+					<button type="submit" form="apply-form" href="#" class="button ripple-effect"> Button </button>
+
+				</form>
+			</section>
+
+		</div>
+
+{% include 'includes/footer.html' %}
+{% endblock %}

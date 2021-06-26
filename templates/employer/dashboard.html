@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<!-- Dashboard Container -->
+<div class="dashboard-container">
+
+	<!-- Dashboard Sidebar
+	================================================== -->
+	<div class="dashboard-sidebar">
+		<div class="dashboard-sidebar-inner" data-simplebar>
+			<div class="dashboard-nav-container">
+
+				<!-- Responsive Navigation Trigger -->
+				<a href="#" class="dashboard-responsive-nav-trigger">
+					<span class="hamburger hamburger--collapse" >
+						<span class="hamburger-box">
+							<span class="hamburger-inner"></span>
+						</span>
+					</span>
+					<span class="trigger-title">Dashboard Navigation</span>
+				</a>
+				
+				<!-- Navigation -->
+				<div class="dashboard-nav">
+					<div class="dashboard-nav-inner">
+
+						<ul data-submenu-title="Organize and Manage">
+							<li class="active"><a href="{% url 'dashboard' %}"><i class="icon-material-outline-dashboard"></i> Dashboard</a></li>
+							<li><a href="{% url 'job_list' %}"><i class="icon-material-outline-business-center"></i> Manage Jobs </a></li>
+							<li><a href="{% url 'applicant_list' %}"><i class="icon-material-outline-person-pin"></i> Search Applicant</a></li>
+							<li><a href="{% url 'employer_profile' %}"><i class="icon-material-outline-account-circle"></i>Employers Profile</a></li>
+						</ul>
+					</div>
+				</div>
+				<!-- Navigation / End -->
+
+			</div>
+		</div>
+	</div>
+	<!-- Dashboard Sidebar / End -->
+
+
+	<!-- Dashboard Content
+	================================================== -->
+	<div class="dashboard-content-container" data-simplebar>
+		<div class="dashboard-content-inner" >
+			
+			<!-- Dashboard Headline -->
+			<div class="dashboard-headline">
+				<h3>{{request.user.first_name}} {{request.user.last_name}}</h3>
+				<span>We are glad to see you again!</span>
+
+				<!-- Breadcrumbs -->
+				<nav id="breadcrumbs" class="dark">
+					<ul>
+						<li><a href="#">Home</a></li>
+						<li>Dashboard</li>
+					</ul>
+				</nav>
+			</div>
+	
+			<!-- Fun Facts Container -->
+			<div class="fun-facts-container">
+				<div class="fun-fact" data-fun-fact-color="#36bd78">
+					<div class="fun-fact-text">
+						<span>Applicants Total</span>
+						<h4>{{applicant_count}}</h4>
+					</div>
+					<div class="fun-fact-icon"><i class="icon-line-awesome-smile-o"></i></div>
+				</div>
+				<div class="fun-fact" data-fun-fact-color="#b81b7f">
+					<div class="fun-fact-text">
+						<span> Your Jobs Posted</span>
+						<h4>{{job_count}}</h4>
+					</div>
+					<div class="fun-fact-icon"><i class="icon-material-outline-business-center"></i></div>
+				</div>
+				<!-- Last one has to be hidden below 1600px, sorry :( -->
+				<div class="fun-fact" data-fun-fact-color="#2a41e6">
+					<div class="fun-fact-text">
+						<span>Applicant Joined Today</span>
+						<h4>{{applicant_join_today}}</h4>
+					</div>
+					<div class="fun-fact-icon"><i class="icon-feather-trending-up"></i></div>
+				</div>
+
+				
+			</div>
+			
+            <div class="row">
+
+				<div class="col-xl-6">
+					<!-- Dashboard Box -->
+	    <!-- Dashboard Box -->
+					<!-- If you want adjust height of two boxes 
+						 add to the lower box 'main-box-in-row' 
+						 and 'child-box-in-row' to the higher box -->
+					<div class="dashboard-box child-box-in-row"> 
+						<div class="headline">
+							<h3><i class="icon-material-outline-note-add"></i> Bookmarked List</h3>
+						</div>	
+
+						<div class="dashboard-box-scrollbar" style="max-height: 493.9707px" data-simplebar="init"><div class="simplebar-track vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="visibility: visible; top: 0px; height: 445px;"></div></div><div class="simplebar-track horizontal" style="visibility: visible;"><div class="simplebar-scrollbar" style="visibility: visible; left: 0px; width: 25px;"></div></div><div class="simplebar-scroll-content" style="padding-right: 16px; margin-bottom: -32px;"><div class="simplebar-content" style="padding-bottom: 16px; margin-right: -16px;"><div class="dashboard-box-scrollbar" style="max-height: 498.9707px" data-simplebar="init"><div class="simplebar-track vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="visibility: visible; top: 0px; height: 455px;"></div></div><div class="simplebar-track horizontal" style="visibility: visible;"><div class="simplebar-scrollbar" style="visibility: visible; left: 0px; width: 25px;"></div></div><div class="simplebar-scroll-content" style="padding-right: 16px; margin-bottom: -32px;"><div class="simplebar-content" style="padding-bottom: 16px; margin-right: -16px;"><div class="dashboard-box-scrollbar" style="max-height: 498.9707px" data-simplebar="init"><div class="simplebar-track vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="visibility: visible; top: 66px; height: 389px;"></div></div><div class="simplebar-track horizontal" style="visibility: visible;"><div class="simplebar-scrollbar" style="visibility: visible; left: 0px; width: 25px;"></div></div><div class="simplebar-scroll-content" style="padding-right: 16px; margin-bottom: -32px;"><div class="simplebar-content" style="padding-bottom: 16px; margin-right: -16px;"><div class="content with-padding">
+							{% for bookmark in bookmarks%}
+							<!-- Note -->
+							<div class="dashboard-note">
+								<h4><a target="_blank" href="{% url 'applicant_detail' bookmark.Applicant.id %}">{{bookmark.Applicant.first_name}} {{bookmark.Applicant.last_name}}</h4>
+								<span class="freelancer-detail-item"><i class="icon-material-outline-my-location"></i> {{bookmark.Applicant.profile.tag_line}}</span>
+								<span class="freelancer-detail-item"><i class="icon-feather-mail"></i> {{bookmark.Applicant.email}}</span>
+								<div class="note-footer">
+									<div class="note-buttons">
+										<a hidden href="#" data-tippy-placement="top" data-tippy="" data-original-title="Remove"><i class="icon-feather-trash-2"></i></a>
+									</div>
+								</div>
+							</div>
+							{%endfor%}
+						</div></div></div></div></div></div></div></div></div></div>
+							<div class="add-note-button">
+								<a href="{% url 'applicant_list' %}" class="popup-with-zoom-anim button full-width button-sliding-icon" style="width: 427.768px;">Search Applicant <i class="icon-material-outline-arrow-right-alt"></i></a>
+							</div>
+					</div>
+					<!-- Dashboard Box / End -->
+				</div>
+				<div class="col-xl-6">
+
+					<!-- Dashboard Box -->
+					<!-- If you want adjust height of two boxes 
+						 add to the lower box 'main-box-in-row' 
+						 and 'child-box-in-row' to the higher box -->
+					<div class="dashboard-box child-box-in-row"> 
+						<div class="headline">
+							<h3><i class="icon-material-outline-note-add"></i> Jobs Recently Posted</h3>
+						</div>	
+
+						<div class="dashboard-box-scrollbar" style="max-height: 493.9707px" data-simplebar="init"><div class="simplebar-track vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="visibility: visible; top: 0px; height: 445px;"></div></div><div class="simplebar-track horizontal" style="visibility: visible;"><div class="simplebar-scrollbar" style="visibility: visible; left: 0px; width: 25px;"></div></div><div class="simplebar-scroll-content" style="padding-right: 16px; margin-bottom: -32px;"><div class="simplebar-content" style="padding-bottom: 16px; margin-right: -16px;"><div class="dashboard-box-scrollbar" style="max-height: 498.9707px" data-simplebar="init"><div class="simplebar-track vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="visibility: visible; top: 0px; height: 455px;"></div></div><div class="simplebar-track horizontal" style="visibility: visible;"><div class="simplebar-scrollbar" style="visibility: visible; left: 0px; width: 25px;"></div></div><div class="simplebar-scroll-content" style="padding-right: 16px; margin-bottom: -32px;"><div class="simplebar-content" style="padding-bottom: 16px; margin-right: -16px;"><div class="dashboard-box-scrollbar" style="max-height: 498.9707px" data-simplebar="init"><div class="simplebar-track vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="visibility: visible; top: 66px; height: 389px;"></div></div><div class="simplebar-track horizontal" style="visibility: visible;"><div class="simplebar-scrollbar" style="visibility: visible; left: 0px; width: 25px;"></div></div><div class="simplebar-scroll-content" style="padding-right: 16px; margin-bottom: -32px;"><div class="simplebar-content" style="padding-bottom: 16px; margin-right: -16px;"><div class="content with-padding">
+							{% for job in jobs%}
+							<!-- Note -->
+							<div class="dashboard-note">
+								<h4><a target="_blank" href="{% url 'job_detail' job.ID %}">{{ job.job_title }}</h4>
+								<span class="freelancer-detail-item">{{job.job_time}}</span>
+								<div class="note-footer">
+									<div class="note-buttons">
+										<a hidden href="#" data-tippy-placement="top" data-tippy="" data-original-title="Remove"><i class="icon-feather-trash-2"></i></a>
+									</div>
+								</div>
+							</div>
+							{%endfor%}
+						</div></div></div></div></div></div></div></div></div></div>
+							<div class="add-note-button">
+								<a href="{% url 'post_job' %}" class="popup-with-zoom-anim button full-width button-sliding-icon" style="width: 427.768px;">Post a new job<i class="icon-material-outline-arrow-right-alt"></i></a>
+							</div>
+					</div>
+					<!-- Dashboard Box / End -->
+				</div>
+			</div>
+
+        <div class="dashboard-footer-spacer" style="padding-top: 124.539px;"></div>
+        <div class="small-footer margin-top-15">
+				<div class="small-footer-copyrights">
+					© 2018 <strong>Hireo</strong>. All Rights Reserved.
+				</div>
+				<ul class="footer-social-links">
+					<li>
+						<a href="#" data-tippy-placement="top" data-tippy="" data-original-title="Facebook">
+							<i class="icon-brand-facebook-f"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#" data-tippy-placement="top" data-tippy="" data-original-title="Twitter">
+							<i class="icon-brand-twitter"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#" data-tippy-placement="top" data-tippy="" data-original-title="Google Plus">
+							<i class="icon-brand-google-plus-g"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#" data-tippy-placement="top" data-tippy="" data-original-title="LinkedIn">
+							<i class="icon-brand-linkedin-in"></i>
+						</a>
+					</li>
+				</ul>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+        
+	</div>
+	<!-- Dashboard Content / End -->
+
+</div>
+<!-- Dashboard Container / End -->
+<div class="margin-top-90"></div>
+{% endblock %}

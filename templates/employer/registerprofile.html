@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% block content%}
+{%load static%}
+{% if user.is_authenticated%}
+<!-- Dashboard Container -->
+<div class="dashboard-container">
+
+
+	<!-- Dashboard Content
+	================================================== -->
+	<div class="dashboard-content-container" data-simplebar>
+	{% include 'includes/messages.html' %}
+		<form action="{% url 'employer_company_register' %}" method="POST" class="dashboard-content-inner"  id="profile-account-form" enctype="multipart/form-data">
+			{% csrf_token %}
+			<!-- Dashboard Headline -->
+			<div class="dashboard-headline">
+				<h3>Settings</h3>
+
+				<!-- Breadcrumbs -->
+				<nav id="breadcrumbs" class="dark">
+					<ul>
+						<li><a href="/">Home</a></li>
+						<li><a href="/profile">Profile</a></li>
+					</ul>
+				</nav>
+			</div>
+	
+			<!-- Row -->
+			<div class="row">
+
+				<!-- Dashboard Box -->
+				<div class="col-xl-12">
+					<div class="dashboard-box margin-top-0">
+
+						<!-- Headline -->
+						<div class="headline">
+							<h3><i class="icon-material-outline-account-circle"></i> My Account</h3>
+						</div>
+
+						<div class="content with-padding padding-bottom-0">
+
+							<div class="row">
+
+								<div class="col">
+									<div class="row">
+
+										<div class="col-xl-6">
+											<div class="submit-field">
+												<h5>Company Name</h5>
+												<input type="text" class="with-border" name = "companyname" value ="{{user.employer.company_name}}" required>
+											</div>
+										</div>
+
+										<div class="col-xl-6">
+											<div class="submit-field">
+												<h5>Industry</h5>
+												<input type="text" class="with-border" name = "industry" value = "{{user.employer.industry}}" required>
+											</div>
+										</div>
+
+
+										<div class="col-xl-6">
+											<div class="submit-field">
+												<h5>Address</h5>
+												<input type="text" class="with-border" name = "address" value="{{user.employer.address}}" required>
+											</div>
+										</div>
+
+                                        <div class="col-xl-6">
+											<div class="submit-field">
+												<h5>Phone</h5>
+												<input type="text" class="with-border" name = "phone" value="{{user.employer.phone}}" required>
+											</div>
+										</div>
+
+                                        <div class="col-xl-6">
+											<div class="submit-field">
+												<h5>Website</h5>
+												<input type="text" class="with-border" name = "website" value="{{user.employer.website}}" required>
+											</div>
+										</div>
+
+
+                                          <div class="col-xl-6">
+											<div class="submit-field">
+												<h5>Company Size</h5>
+												<input type="number" class="with-border" value="0" name = "companysize" value="{{user.employer.company_size}}" required>
+											</div>
+										</div>
+
+                                        <div class="col-xl-12">
+										<div class="submit-field">
+											<h5><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Introduction</font></font></h5>
+                                            <textarea class="ckeditor" name = "introduction" cols="30" rows="5" name="introduction">{{user.employer.introduction | safe}}</textarea>
+										</div>
+
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+					
+				</div>
+
+			<button class="button ripple-effect big margin-top-30" type='submit' form="profile-account-form">Save Changes</button>
+			<!-- Footer -->
+			<div class="dashboard-footer-spacer"></div>
+			<div class="small-footer margin-top-15">
+				<div class="small-footer-copyrights">
+					© 2018 <strong>Hireo</strong>. All Rights Reserved.
+				</div>
+				<ul class="footer-social-links">
+					<li>
+						<a href="#" title="Facebook" data-tippy-placement="top">
+							<i class="icon-brand-facebook-f"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#" title="Twitter" data-tippy-placement="top">
+							<i class="icon-brand-twitter"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#" title="Google Plus" data-tippy-placement="top">
+							<i class="icon-brand-google-plus-g"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#" title="LinkedIn" data-tippy-placement="top">
+							<i class="icon-brand-linkedin-in"></i>
+						</a>
+					</li>
+				</ul>
+				<div class="clearfix"></div>
+			</div>
+			<!-- Footer / End -->
+
+		</form>
+	</div>
+	<!-- Dashboard Content / End -->
+
+</div>
+<!-- Dashboard Container / End -->
+
+</div>
+
+<!-- Wrapper / End -->
+{%else%}
+    <a href = 'login'> Log In </a>
+{% endif %}
+{% endblock %}
