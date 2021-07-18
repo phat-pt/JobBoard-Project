@@ -98,6 +98,7 @@
 						<div class="content">
 							<ul class="dashboard-box-list">
                             {%for applicant in applicants%}
+								{% if applicant.profile.CV %}
 								<li>
 									<!-- Overview -->
 									<div class="freelancer-overview manage-candidates">
@@ -122,6 +123,7 @@
 										</div>
 									</div>
 								</li>
+								{%endif%}
                             {%endfor%}
 							</ul>
 						</div>

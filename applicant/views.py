@@ -185,6 +185,7 @@ def profile(request):
             r_new_password = request.POST['new_password']   
             r_repeat_password = request.POST['repeat_password'] 
             r_CV = request.FILES.get('CV',"")
+            r_location = request.POST['location']
 
             if profile:
                 user.first_name = r_firstname
@@ -193,10 +194,8 @@ def profile(request):
                 profile.skill = r_skill
                 profile.tag_line = r_tagline
                 profile.introduction  = r_introduction
-                if r_CV == "":
-                    profile.CV = profile.CV
-                else:
-                    profile.CV = r_CV
+                profile.CV = r_CV
+                profile.location = r_location
                 user.save()
                 profile.save()
                 messages.success(request, "Updated Successfully")
@@ -217,3 +216,12 @@ def profile(request):
     else:
         return redirect('login')
     return render(request, 'account/profile.html', {'profile': profile})
+
+def delete_CV(request):
+    profile = Profile.objects.filter(user=request.user).first()
+    try:
+        profile.CV.delete()
+        return redirect('profile')
+    except:
+        messages.error(request,"Can not delete!!")
+        return redirect('profile')

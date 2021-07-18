@@ -12,4 +12,5 @@ urlpatterns = [
     path('forgot_password', views.forgot_password, name = 'forgot_password'),
     path('resetpassword/<uidb64>/<token>', ResetPasswordVerificationView.as_view(), name='resetpassword'), 
     path('reset_password', views.reset_password, name= 'reset_password'),
+    path('delete_CV', views.delete_CV, name = 'delete_CV'),
 ]

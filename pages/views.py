@@ -28,7 +28,7 @@ def home(request):
             applicant_group.user_set.add(user)
             user.is_staff = False   
             user.save()
-    jobs = JobPost.objects.all()[:5]
+    jobs = JobPost.objects.order_by('-job_time').all()[:5]
     #AutoComplete
     if "term" in request.GET:
         # qs = JobPost.objects.filter(job_title__istartswith=request.GET.get("term"))
@@ -43,7 +43,7 @@ def home(request):
         profile = Profile.objects.filter(user=request.user).first()
         if profile:
             if profile.skill == None:
-                jobs = JobPost.objects.all()[:5]
+                jobs = JobPost.objects.order_by('-job_time').all()[:5]
             else:
                 s = JobPostDocument.search().query(MultiMatch(query = profile.skill ,fields=['job_description', 'job_title']))
                 s = s[0:5]
@@ -98,21 +98,38 @@ def job_detail(request, id):
 
 def advanced_search(keyword, location, jobtype, min_salary, max_salary):
     query1 = MultiMatch(query=keyword,  fields=['job_description', 'job_title'])
-    query2 = MultiMatch(query=location,  fields=['job_location'], fuzziness='AUTO')
+    query2 = MultiMatch(query=location,  fields=['job_location'])
     query3 = MultiMatch(query=jobtype, fields=['job_type'])
     query4 = MultiMatch(query="$" +min_salary + "$" +max_salary, fields=['job_salary'])
-    if keyword and location == "":
-        location = "remote"
-        query2 = MultiMatch(query=location,  fields=['job_location'])
-        s = JobPostDocument.search().query(query1 | query2 | query3 | query4)
-    elif location and keyword == "":
-        s = JobPostDocument.search().query(query2| query3 | query4)
-    elif location and keyword:
-        s = JobPostDocument.search().query(query1 & query2 | query3| query4)
+
+    if keyword and location and jobtype and min_salary and max_salary:
+        s = JobPostDocument.search().query(query1 & query2 & query3 | query4)
+    elif keyword and location and jobtype:
+        s = JobPostDocument.search().query(query1 & query2 & query3)
+    elif keyword and location and min_salary and max_salary:
+        s = JobPostDocument.search().query(query1 & query2 | query4)
+    elif keyword and jobtype and min_salary and max_salary:
+        s = JobPostDocument.search().query(query1 & query3 | query4)
+    elif keyword and location:
+        s = JobPostDocument.search().query(query1 & query2)
+    elif keyword and jobtype:
+        s = JobPostDocument.search().query(query1 & query3)
+    elif keyword and min_salary and max_salary:
+        s = JobPostDocument.search().query(query1 & query4)
+    elif keyword:
+        s = JobPostDocument.search().query(query1)
+    elif location:
+        s = JobPostDocument.search().query(query2)
+    elif min_salary: 
+        s = JobPostDocument.search().query(MultiMatch(query=min_salary, fields=['job_salary']))
+    elif max_salary: 
+        s = JobPostDocument.search().query(MultiMatch(query=max_salary, fields=['job_salary']))
+    elif jobtype:
+        s = JobPostDocument.search().query(query3) 
     else:
         location = "remote"
         query2 = MultiMatch(query=location,  fields=['job_location'])
-        s = JobPostDocument.search().query(query2 | query3| query4)
+        s = JobPostDocument.search().query(query2).sort({'job_time': "desc"})
     total = s.count()
     s= s[0:total]
     return s.execute(), total
@@ -122,16 +139,35 @@ def sorted_advanced_search(keyword, location, jobtype, min_salary, max_salary):
     query2 = MultiMatch(query=location,  fields=['job_location'])
     query3 = MultiMatch(query=jobtype, fields=['job_type'])
     query4 = MultiMatch(query="$" +min_salary + "$" +max_salary, fields=['job_salary'])
-    if keyword and location == "":
-        location = "remote"
-        s = JobPostDocument.search().query(query1 | query2 | query3| query4).sort({'job_time': "desc"})
-    elif location and keyword == "":
-        s = JobPostDocument.search().query(query2 | query3| query4).sort({'job_time': "desc"})
-    elif location and keyword:
-        s = JobPostDocument.search().query(query1 & query2 | query3| query4).sort({'job_time': "desc"})
+
+    if keyword and location and jobtype and min_salary and max_salary:
+        s = JobPostDocument.search().query(query1 & query2 & query3 | query4).sort({'job_time': "desc"})
+    elif keyword and location and jobtype:
+        s = JobPostDocument.search().query(query1 & query2 & query3).sort({'job_time': "desc"})
+    elif keyword and location and min_salary and max_salary:
+        s = JobPostDocument.search().query(query1 & query2 | query4).sort({'job_time': "desc"})
+    elif keyword and jobtype and min_salary and max_salary:
+        s = JobPostDocument.search().query(query1 & query3 | query4).sort({'job_time': "desc"})
+    elif keyword and location:
+        s = JobPostDocument.search().query(query1 & query2).sort({'job_time': "desc"})
+    elif keyword and jobtype:
+        s = JobPostDocument.search().query(query1 & query3).sort({'job_time': "desc"})
+    elif keyword and min_salary and max_salary:
+        s = JobPostDocument.search().query(query1 & query4).sort({'job_time': "desc"})
+    elif keyword:
+        s = JobPostDocument.search().query(query1).sort({'job_time': "desc"})
+    elif location:
+        s = JobPostDocument.search().query(query2).sort({'job_time': "desc"})
+    elif min_salary: 
+        s = JobPostDocument.search().query(MultiMatch(query=min_salary, fields=['job_salary'])).sort({'job_time': "desc"})
+    elif max_salary: 
+        s = JobPostDocument.search().query(MultiMatch(query=max_salary, fields=['job_salary'])).sort({'job_time': "desc"})
+    elif jobtype:
+        s = JobPostDocument.search().query(query3).sort({'job_time': "desc"})
     else:
         location = "remote"
-        s = JobPostDocument.search().query(query2 | query3 |query4).sort({'job_time': "desc"})
+        query2 = MultiMatch(query=location,  fields=['job_location'])
+        s = JobPostDocument.search().query(query2).sort({'job_time': "desc"})
     total = s.count()
     s= s[0:total]
     return s.execute(), total

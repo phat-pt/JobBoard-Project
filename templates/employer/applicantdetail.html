@@ -34,7 +34,7 @@
 			<!-- Page Content -->
 			<div class="single-page-section">
 				<h3 class="margin-bottom-25">About Me</h3>
-                <p> {{applicant.profile.introduction}}</p>
+                <p> {{applicant.profile.introduction | safe}} </p>
 			</div>
 
             <embed src="{{applicant.profile.CV.url}}" type="application/pdf" width="100%" height="1150px"/>

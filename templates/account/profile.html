@@ -115,7 +115,7 @@
 												</font><a href=""> Show Current CV: </a> </span>
 												{% endif %}
 												<i><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">PDF</font></font></i>
-												<button href="#" class="remove-attachment" data-tippy-placement="top" data-tippy="" data-original-title="Remove"></button>
+												<button href="{% url 'delete_CV' %}" class="remove-attachment" data-tippy-placement="top" data-tippy="" data-original-title="Remove"></button>
 											</div>
 											<div class="uploadButton">
 											<label class="uploadButton-button ripple-effect" for="file-upload">Upload Files</label>
@@ -131,6 +131,13 @@
 										<div class="submit-field">
 											<h5><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Tag Line</font></font></h5>
 											<input name = "tagline" type="text" class="with-border" value="{{user.profile.tag_line}}">
+										</div>
+									</div>
+
+									<div class="col-xl-6">
+										<div class="submit-field">
+											<h5><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Location</font></font></h5>
+											<input name = "location" type="text" class="with-border" value="{{user.profile.location}}">
 										</div>
 									</div>
 

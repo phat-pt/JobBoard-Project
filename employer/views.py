@@ -367,7 +367,6 @@ def employer_profile(request):
 @user_passes_test(lambda u: u.groups.filter(name='Applicant').count() == 0, login_url='/404')
 def applicant_list(request):
     applicants = User.objects.filter(groups__name='Applicant').all()
-    print(applicants)
     paginator = Paginator(applicants, 5)
     page = request.GET.get('page')
     applicants = paginator.get_page(page)
@@ -379,19 +378,32 @@ def applicant_search(request):
     r_keyword = request.GET.get('keyword',"")
     r_location = request.GET.get('location',"")
     r_skill = request.GET.get('skill', "")
-    if r_keyword or r_location or r_skill:
-        query1 = MultiMatch(query=r_keyword,  fields=['tag_line'])
-        query2 = MultiMatch(query=r_location,  fields=['location'])
-        query3 = MultiMatch(query=r_skill, fields=['skill'])
-        s = ProfileDocument.search().query(query1 | query2 | query3)
+    query1 = MultiMatch(query=r_keyword,  fields=['tag_line'])
+    query2 = MultiMatch(query=r_location,  fields=['location'])
+    query3 = MultiMatch(query=r_skill, fields=['skill'])
+    print(r_keyword + r_location + r_skill)
+    if r_location and r_skill and r_keyword:
+        s = ProfileDocument.search().query(query1&query2&query3)
+    elif r_keyword and r_location:
+        s = ProfileDocument.search().query(query1&query2|query3)
+    elif r_keyword and r_skill:
+        s = ProfileDocument.search().query(query1&query3|query2)
+    elif r_location and r_skill:
+        s = ProfileDocument.search().query(query3&query2|query1)
+    elif r_location:
+        s = ProfileDocument.search().query(query2)
+    elif r_skill:
+        s = ProfileDocument.search().query(query3)
+    elif r_keyword:
+        s = ProfileDocument.search().query(query1)
+    else:
+        applicants = User.objects.filter(groups__name='Applicant').all()
+    if s:
         total = s.count()
         s= s[0:total]
         profiles =  s.execute()
         profile_id = [profile.id for profile in profiles]
-        print(profile_id)
         applicants = User.objects.filter(profile__in = profile_id)
-    else:
-        applicants = User.objects.filter(groups__name='Applicant').all()
     paginator = Paginator(applicants, 5)
     page = request.GET.get('page')
     applicants = paginator.get_page(page)
