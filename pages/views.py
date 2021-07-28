@@ -33,9 +33,9 @@ def home(request):
     if "term" in request.GET:
         # qs = JobPost.objects.filter(job_title__istartswith=request.GET.get("term"))
         es_title = JobPostDocument.search().suggest( 'autoc', request.GET.get("term") ,  completion={ 'field': 'job_title.suggest', 'skip_duplicates': True }).execute().to_dict()
-        es_location = JobPost.objects.filter(job_location__icontains = request.GET.get("term")).all()[:5]
+        es_location = JobPostDocument.search().suggest( 'autoc', request.GET.get("term") ,  completion={ 'field': 'job_location.suggest', 'skip_duplicates': True }).execute().to_dict()
         #es_title = JobPost.objects.filter(job_title__icontains = request.GET.get("term")).all()[:5]
-        job_titles_locations = [suggest['text'] for suggest in es_title['suggest']['autoc'][0]['options']] + [job.job_location for job in es_location]
+        job_titles_locations = [suggest['text'] for suggest in es_title['suggest']['autoc'][0]['options']] + [suggest['text'] for suggest in es_location['suggest']['autoc'][0]['options']]
         # job_titles_locations = [job.job_title for job in es_location] + [job.job_location for job in es_location]
         return JsonResponse(job_titles_locations, safe=False)
     if (user.is_authenticated):

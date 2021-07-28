@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
+{% load user_tags%}
 
 <!-- Titlebar
 ================================================== -->
@@ -99,10 +100,12 @@
 		<!-- Sidebar -->
 		<div class="col-xl-4 col-lg-4">
 			<div class="sidebar-container">
-				{% if single_job.job_apply_url != ""%}
-				<a target="_blank" href="{{single_job.job_apply_url}}" class="apply-now-button popup-with-zoom-anim">Apply Now <i class="icon-material-outline-arrow-right-alt"></i></a>
+				{% if single_job|is_expired == False %}
+					<a href="#" class="apply-now-button popup-with-zoom-anim">Job Expired <i class="icon-material-outline-arrow-right-alt"></i></a>
+				{% elif single_job.job_apply_url != ""%}
+					<a target="_blank" href="{{single_job.job_apply_url}}" class="apply-now-button popup-with-zoom-anim">Apply Now <i class="icon-material-outline-arrow-right-alt"></i></a>
 				{% else %}
-				<a href="{% url 'apply_job' single_job.ID%}" class="apply-now-button popup-with-zoom-anim">Apply Now <i class="icon-material-outline-arrow-right-alt"></i></a>
+					<a href="{% url 'apply_job' single_job.ID%}" class="apply-now-button popup-with-zoom-anim">Apply Now <i class="icon-material-outline-arrow-right-alt"></i></a>
 				{% endif %}
 				<!-- Sidebar Widget -->
 				<div class="sidebar-widget">

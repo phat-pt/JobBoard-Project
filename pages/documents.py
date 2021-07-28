@@ -10,7 +10,7 @@ from elasticsearch_dsl import analysis
 # Analyzer for searched term indexing
 html_strip = analysis.analyzer(
     'html_strip',
-    tokenizer="keyword",
+    tokenizer="standard",
     filter=["lowercase", "stop", "snowball",analysis.token_filter("word_joner","shingle", token_separator = "", output_unigrams = True)],
     char_filter=["html_strip"]
 )
@@ -44,7 +44,9 @@ class JobPostDocument(Document):
 
     job_location = fields.TextField(
         analyzer = html_strip,
-        fields = {'raw': fields.TextField(), }
+        fields = {
+            'raw': fields.TextField(), 
+            'suggest': fields.CompletionField(),}
     )
     
     
