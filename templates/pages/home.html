@@ -31,7 +31,7 @@
 						<div class="intro-search-field ">
 							<label for="autoc-location" class="field-title ripple-effect">Where?</label>
 							<div class="input-with-icon">
-								<input id="autoc-location" type="text" placeholder="Remote" name="location" value="{{ request.GET.location }}">
+								<input id="autoc-location" type="text" placeholder="Location" name="location" value="{{ request.GET.location }}">
 								<i class="icon-material-outline-location-on"></i>
 							</div>
 						</div>
@@ -71,7 +71,7 @@
 				<!-- Section Headline -->
 				<div class="section-headline margin-top-0 margin-bottom-35">
 					<h3>Jobs Recommended by your skills</h3>
-					<a href="{% url 'jobs' %}" class="headline-link">Browse All Jobs</a>
+					<a href="{% url 'search' %}" class="headline-link">Browse All Jobs</a>
 				</div>
 				
 				<!-- Jobs Container -->
@@ -115,7 +115,7 @@
 				<!-- Section Headline -->
 				<div class="section-headline margin-top-0 margin-bottom-35">
 					<h3>Recent Jobs</h3>
-					<a href="jobs-list-layout-full-page-map.html" class="headline-link">Browse All Jobs</a>
+					<a href="{% url 'search' %}" class="headline-link">Browse All Jobs</a>
 				</div>
 				
 				<!-- Jobs Container -->
