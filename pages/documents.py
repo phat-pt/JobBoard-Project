@@ -5,21 +5,44 @@ from elasticsearch_dsl import analyzer
 from django_elasticsearch_dsl import Document, fields
 from django_elasticsearch_dsl.registries import registry
 from elasticsearch_dsl.connections import connections
+from elasticsearch_dsl import analysis
 
 # Analyzer for searched term indexing
-html_strip = analyzer(
+html_strip = analysis.analyzer(
     'html_strip',
-    tokenizer="standard",
-    filter=["lowercase", "stop", "snowball"],
+    tokenizer="keyword",
+    filter=["lowercase", "stop", "snowball",analysis.token_filter("word_joner","shingle", token_separator = "", output_unigrams = True)],
+    char_filter=["html_strip"]
+)
+
+salary_strip = analysis.analyzer(
+    'salary_strip',
+    tokenizer="ngram",
+    filter=["lowercase", "stop", "snowball",analysis.token_filter("word_joner","shingle", token_separator = "", output_unigrams = True)],
     char_filter=["html_strip"]
 )
 
 @registry.register_document
 class JobPostDocument(Document):
     
-    job_title = fields.CompletionField()
+    job_title = fields.TextField(
+        fields={
+            'raw': fields.TextField(analyzer=html_strip),
+            'suggest': fields.CompletionField(),
+        }
+     )
     # Name of the Elasticsearch index
     job_description = fields.TextField(
+        analyzer = html_strip,
+        fields = {'raw': fields.TextField(), }
+    )
+
+    job_salary = fields.TextField(
+        analyzer = salary_strip,
+        fields = {'raw': fields.TextField(), }
+    )
+
+    job_location = fields.TextField(
         analyzer = html_strip,
         fields = {'raw': fields.TextField(), }
     )
@@ -35,7 +58,7 @@ class JobPostDocument(Document):
         model = JobPost # The model associated with this Document
 
         # The fields of the model you want to be indexed in Elasticsearch
-        fields = ['ID','job_location','job_salary','job_summary','job_time','company_name','job_type']
+        fields = ['ID','job_summary','job_time','company_name','job_type']
 
 
 # class JobPostDocument(FacetedSearch):

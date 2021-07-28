@@ -69,11 +69,20 @@
 					    <div class="keywords-container">
 						<div class="keyword-input-container">
                             <div class= "row">
-                                <div class="col-xl-8">
+                                <div class="col-xl-4">
                                     <input value="{{ request.GET.keyword }}" name = "keyword" type="text" class="keyword-input with-border" placeholder="TagLine">
                                 </div>
                                 <div class="col-xl-4">
                                     <input value="{{ request.GET.location }}" name = "location" type="text" class="keyword-input with-border" placeholder="Location">
+                                </div>
+								<div class="col-xl-1">
+                                    <input value="{{ request.GET.experience }}" name = "experience" type="number" class="keyword-input with-border" placeholder="Year">
+                                </div>
+								<div class="col-xl-2">
+                                    <select name = "experience_time" class="selectpicker with-border" data-size="2" title="Experience">
+										<option value="months" {% if request.GET.experience_time == 'months' %}selected{% endif %} >months</option>
+										<option value="years" {% if request.GET.experience_time == 'years' %}selected{% endif %}>years</option>
+									</select>
                                 </div>
                                 <div class="col-xl-8">
                                     <input id="skills" value="{{ request.GET.skill }}" name = "skill" type="text" class="keyword-input with-border" placeholder="Skills">
@@ -104,7 +113,6 @@
 									<div class="freelancer-overview manage-candidates">
 										<div class="freelancer-overview-inner">
 
-
 											<!-- Name -->
 											<div class="freelancer-name">
 												<h4><a target="_blank" href="{% url 'applicant_detail' applicant.id %}">{{applicant.first_name}} {{applicant.last_name}} </a></h4>
@@ -114,6 +122,7 @@
                                                 <div> <span class="freelancer-detail-item"><i class="icon-material-outline-location-on"></i> {{applicant.profile.location}}</span> </div>
 												<div> <span class="freelancer-detail-item">Tag Line: {{applicant.profile.tag_line}}</i> </span></div>
                                                 <div> <span class="freelancer-detail-item">Skill: {{applicant.profile.skill}}</i> </span></div>
+												<div> <span class="freelancer-detail-item">Experience: {{applicant.profile.experience}}</i> </span></div>
 
 												<!-- Buttons -->
 												<div class="buttons-to-right always-visible margin-top-25 margin-bottom-5">
@@ -137,7 +146,9 @@
 									<a href="?page={{applicants.previous_page_number}}
 										{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}
 										{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}
-										{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}">
+										{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}
+										{% if request.GET.experience %}&jobtype={{ request.GET.experience }}{% endif %}
+										{% if request.GET.experience_time %}&jobtype={{ request.GET.experience_time }}{% endif %}">
 										<i class="icon-material-outline-keyboard-arrow-left"></i>
 									</a>
 									</li>
@@ -164,7 +175,9 @@
 									<li class="pagination-arrow"><a href="?page={{ applicants.next_page_number }}
 									{% if request.GET.location %}&location={{ request.GET.location }}{% endif %}
 									{% if request.GET.keyword %}&keyword={{ request.GET.keyword }}{% endif %}
-									{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}">
+									{% if request.GET.jobtype %}&jobtype={{ request.GET.jobtype }}{% endif %}
+									{% if request.GET.experience %}&jobtype={{ request.GET.experience }}{% endif %}
+									{% if request.GET.experience_time %}&jobtype={{ request.GET.experience_time }}{% endif %}">
 									<i class="icon-material-outline-keyboard-arrow-right"></i></a></li>
 							{% else %}
 									<li class="pagination-arrow" disabled ><a href="#"><i class="icon-material-outline-keyboard-arrow-right"></i></a></li>

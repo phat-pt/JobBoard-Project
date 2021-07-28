@@ -5,12 +5,13 @@ from employer.models import *
 from elasticsearch_dsl import analyzer, tokenizer
 from django.contrib.auth.models import User
 from applicant.models import Profile
+from elasticsearch_dsl import analysis
 
-html_strip = analyzer(
+html_strip = analysis.analyzer(
     'html_strip',
     tokenizer="standard",
-    filter=["lowercase", "stop", "snowball"],
-    char_filter=["html_strip"]
+    filter=["lowercase", "stop", "snowball",analysis.token_filter("word_joner","shingle", token_separator = "", output_unigrams = True)],
+    char_filter=["html_strip"],
 )
 
 @registry.register_document
@@ -20,6 +21,8 @@ class ProfileDocument(Document):
         analyzer = html_strip,
         fields = {'raw': fields.TextField(), }
     )
+    experience = fields.TextField(analyzer = html_strip,
+        fields = {'raw': fields.TextField(), })
     class Index:
         
         # Name of the Elasticsearch index

@@ -127,19 +127,36 @@
 							</li>
 							<li>
 								<div class="row">
-									<div class="col-xl-6">
+									<div class="col-xl-4">
 										<div class="submit-field">
 											<h5><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Tag Line</font></font></h5>
 											<input name = "tagline" type="text" class="with-border" value="{{user.profile.tag_line}}">
 										</div>
 									</div>
 
-									<div class="col-xl-6">
+									<div class="col-xl-4">
 										<div class="submit-field">
 											<h5><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Location</font></font></h5>
 											<input name = "location" type="text" class="with-border" value="{{user.profile.location}}">
 										</div>
 									</div>
+									
+									<div class="col-xl-1">
+										<div class="submit-field">
+											<h5><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Experience</font></font></h5>
+											<input min="1" name = "experience" type="number" class="with-border" value="{{profile.experience}}">
+										</div>
+									</div>
+									<div class="col-xl-2">
+										<div class="submit-field">
+											<h5 >Time</h5>
+											<select name = "experience_time" class="selectpicker with-border" data-size="2" title="Choose option">
+													<option value="months" {% if experiencetime == 'months' %}selected{% endif %} >months</option>
+													<option value="years" {% if experiencetime == 'years' %}selected{% endif %}>years</option>
+											</select>
+										</div>
+									</div>
+
 
 									<div class="col-xl-12">
 										<div class="submit-field">

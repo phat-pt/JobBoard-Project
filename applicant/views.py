@@ -186,6 +186,8 @@ def profile(request):
             r_repeat_password = request.POST['repeat_password'] 
             r_CV = request.FILES.get('CV',"")
             r_location = request.POST['location']
+            r_experience = request.POST['experience']
+            r_experience_time = request.POST['experience_time']
 
             if profile:
                 user.first_name = r_firstname
@@ -196,6 +198,7 @@ def profile(request):
                 profile.introduction  = r_introduction
                 profile.CV = r_CV
                 profile.location = r_location
+                profile.experience = r_experience +" "+ r_experience_time
                 user.save()
                 profile.save()
                 messages.success(request, "Updated Successfully")
@@ -211,11 +214,13 @@ def profile(request):
                             messages.error(request, "Repeat Password do not match!!!")
                             return redirect('profile')
             else:
-                profile = Profile.objects.create(user=user, tag_line=r_tagline, skill = r_skill, CV = r_CV, introduction = r_introduction)
-            
+                profile = Profile.objects.create(user=user, tag_line=r_tagline, skill = r_skill, CV = r_CV, introduction = r_introduction, experience = r_experience +" "+ r_experience_time)
     else:
         return redirect('login')
-    return render(request, 'account/profile.html', {'profile': profile})
+    if profile.experience:
+        experiencetime = profile.experience.split(" ")[1]
+        profile.experience = profile.experience.split(" ")[0]
+    return render(request, 'account/profile.html', {'profile': profile, 'experiencetime' : experiencetime})
 
 def delete_CV(request):
     profile = Profile.objects.filter(user=request.user).first()
