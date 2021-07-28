@@ -99,14 +99,13 @@ def advanced_search(keyword, location, jobtype, min_salary, max_salary,salary_ty
     query1 = MultiMatch(query=keyword,  fields=['job_title','job_description'])
     query2 = MultiMatch(query=location,  fields=['job_location'])
     query3 = MultiMatch(query=jobtype, fields=['job_type'])
-    query4 = MultiMatch(query="$" +min_salary + "$" +max_salary + salary_type, fields=['job_salary'])
+    query4 = MultiMatch(query="$" +min_salary + " - " + "$" +max_salary + " " + salary_type, fields=['job_salary'])
 
     if keyword and location and jobtype and min_salary and max_salary:
         s = JobPostDocument.search().query(query1 & query2 & query3 & query4)
     elif keyword and location and jobtype:
         s = JobPostDocument.search().query(query1 & query2 & query3)
     elif keyword and location and min_salary and max_salary:
-        print("hear")
         s = JobPostDocument.search().query(query1 & query2 & query4)
     elif keyword and jobtype and min_salary and max_salary:
         s = JobPostDocument.search().query(query1 & query3 & query4)
@@ -121,9 +120,9 @@ def advanced_search(keyword, location, jobtype, min_salary, max_salary,salary_ty
     elif location:
         s = JobPostDocument.search().query(query2)
     elif min_salary: 
-        s = JobPostDocument.search().query(MultiMatch(query=min_salary, fields=['job_salary']))
+        s = JobPostDocument.search().query(MultiMatch(query=min_salary + " " + salary_type, fields=['job_salary']))
     elif max_salary: 
-        s = JobPostDocument.search().query(MultiMatch(query=max_salary, fields=['job_salary']))
+        s = JobPostDocument.search().query(MultiMatch(query=max_salary + " " + salary_type, fields=['job_salary']))
     elif jobtype:
         s = JobPostDocument.search().query(query3) 
     else:

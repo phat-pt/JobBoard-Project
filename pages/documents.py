@@ -15,11 +15,16 @@ html_strip = analysis.analyzer(
     char_filter=["html_strip"]
 )
 
+location_strip = analysis.analyzer(
+    'location_strip',
+    tokenizer="standard",
+    filter=["lowercase", "stop", "snowball",analysis.token_filter("word_joner","shingle", token_separator = "", output_unigrams = True)]
+)
+
 salary_strip = analysis.analyzer(
     'salary_strip',
-    tokenizer="ngram",
-    filter=["lowercase", "stop", "snowball",analysis.token_filter("word_joner","shingle", token_separator = "", output_unigrams = True)],
-    char_filter=["html_strip"]
+    tokenizer="standard",
+    filter=["lowercase", analysis.token_filter("word_joner","shingle", token_separator = "", output_unigrams = True)]
 )
 
 @registry.register_document
@@ -43,7 +48,7 @@ class JobPostDocument(Document):
     )
 
     job_location = fields.TextField(
-        analyzer = html_strip,
+        analyzer = location_strip,
         fields = {
             'raw': fields.TextField(), 
             'suggest': fields.CompletionField(),}

@@ -174,7 +174,6 @@ def profile(request):
         if profile.CV == None:
             Profile.objects.update(user=user, CV = "None")
         if request.method == 'POST':
-
             r_firstname = request.POST['firstname']
             r_lastname = request.POST['lastname']
             r_email = request.POST['email']
@@ -215,11 +214,14 @@ def profile(request):
                             return redirect('profile')
             else:
                 profile = Profile.objects.create(user=user, tag_line=r_tagline, skill = r_skill, CV = r_CV, introduction = r_introduction, experience = r_experience +" "+ r_experience_time)
+        if profile.experience:
+            experiencetime = profile.experience.split(" ")[1]
+            profile.experience = profile.experience.split(" ")[0]
+        else:
+            experiencetime = "months"
+            profile.experience = 0
     else:
         return redirect('login')
-    if profile.experience:
-        experiencetime = profile.experience.split(" ")[1]
-        profile.experience = profile.experience.split(" ")[0]
     return render(request, 'account/profile.html', {'profile': profile, 'experiencetime' : experiencetime})
 
 def delete_CV(request):

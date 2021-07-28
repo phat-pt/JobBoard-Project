@@ -2,6 +2,7 @@
 {% block content%}
 {%load static%}
 {% load user_tags %}
+{% load humanize %}
 <!-- Spacer -->
 <div class="margin-top-90"></div>
 <!-- Spacer / End-->
@@ -42,19 +43,20 @@
 					<h3>Salary</h3>
 
 								<div class="input-with-icon">
-									<input class="with-border" type="text" name = "min" placeholder="Min" value = "{{ request.GET.min }}">
+									<input class="with-border" type="text" name = "min" placeholder="Min" value = "{{ request.GET.min|intcomma }}">
 									<i class="currency">USD</i>
 								</div>
 								&nbsp;
 								<div class="input-with-icon">
-									<input class="with-border" type="text" name = "max" placeholder="Max" value = "{{ request.GET.max }}">
+									<input class="with-border" type="text" name = "max" placeholder="Max" value = "{{ request.GET.max|intcomma }}">
 									<i class="currency">USD</i>
 								</div>
 					&nbsp
 								<div>
-									<select name = "salarytype" class="selectpicker default"  data-size="4" >
+									<select name = "salarytype" class="selectpicker default"  data-size="5" >
 										<option value = "" {% if request.GET.jobtype == '' %}selected{% endif %}>Choose by time</option>
 										<option value = "a year" {% if request.GET.salarytype == 'a year' %}selected{% endif %}>A year</option>
+										<option value = "a week" {% if request.GET.salarytype == 'a week' %}selected{% endif %}>A week</option>
 										<option value = "a month" {% if request.GET.salarytype == 'a month' %}selected{% endif %}>A Month</option>
 										<option value = "an hour" {% if request.GET.salarytype == 'an hour' %}selected{% endif %}>An Hour</option>
 									</select>
